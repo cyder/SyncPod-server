@@ -19,14 +19,14 @@ default: &default
 
 development:
   <<: *default
-  database: Aktiva-V2-API_development
+  database: YouTube_Sync_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: Aktiva-V2-API_test
+  database: YouTube_Sync_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -49,6 +49,6 @@ test:
 #
 production:
   <<: *default
-  database: Aktiva-V2-API_production
-  username: Aktiva-V2-API
-  password: <%= ENV['AKTIVA_V2_API_DATABASE_PASSWORD'] %>
+  database: YouTube_Sync_production
+  username: YouTube_Sync
+  password: <%= ENV['YOUTUBE_SYNC_PASSWORD'] %>
