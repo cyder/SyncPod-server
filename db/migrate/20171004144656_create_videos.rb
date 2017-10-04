@@ -7,6 +7,6 @@ class CreateVideos < ActiveRecord::Migration[5.1]
 
       t.timestamps
     end
-    add_foreign_key :video_lists, :rooms    
+    add_foreign_key :video_lists, :rooms
   end
 end
