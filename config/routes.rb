@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  get 'top/show'
+  get "top/show"
 
-  root to: 'top#show'
+  root to: "top#show"
 end
