@@ -2,8 +2,8 @@ class CreateVideos < ActiveRecord::Migration[5.1]
   def change
     create_table :video_lists do |t|
       t.references :room, null: false
-      t.string :videoId
-      t.time :movieStartTime
+      t.string :video_id
+      t.time :movie_start_time
 
       t.timestamps
     end
