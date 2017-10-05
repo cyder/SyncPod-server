@@ -17,9 +17,9 @@ class Video < ApplicationRecord
     duration = item.content_details.duration
 
     create! room: Room.find(room_id),
-                  youtube_video_id: youtube_video_id,
-                  movie_start_time: Time.now.to_s(:db),
-                  title: title,
-                  duration: duration
+            youtube_video_id: youtube_video_id,
+            movie_start_time: Time.now.to_s(:db),
+            title: title,
+            duration: duration
   end
 end

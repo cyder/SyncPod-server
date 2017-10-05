@@ -5,7 +5,7 @@ class CreateVideos < ActiveRecord::Migration[5.1]
       t.string :youtube_video_id, null: false
       t.string :title
       t.string :duration, null: false
-      
+
       t.datetime :movie_start_time, null: false
 
       t.timestamps
