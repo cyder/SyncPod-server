@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20171004144656) do
   create_table "videos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "room_id", null: false
     t.string "video_id", null: false
-    t.time "movie_start_time", null: false
+    t.datetime "movie_start_time", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["room_id"], name: "index_videos_on_room_id"

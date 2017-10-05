@@ -3,6 +3,6 @@ class Video < ApplicationRecord
   after_create_commit { AddVideoBroadcastJob.perform_later self }
 
   def self.add(room_id, video_id)
-    create! room: Room.find(room_id), video_id: video_id, movie_start_time: Time.now
+    create! room: Room.find(room_id), video_id: video_id, movie_start_time: Time.now.to_s(:db)
   end
 end
