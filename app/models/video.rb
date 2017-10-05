@@ -23,16 +23,16 @@ class Video < ApplicationRecord
             duration: duration
   end
 
-  def self.change_duration_format(duraction)
-    hour = get_time(duraction, "H")
-    minitue = get_time(duraction, "M")
-    second = get_time(duraction, "S")
+  def self.change_duration_format(duration)
+    hour = get_time(duration, "H")
+    minitue = get_time(duration, "M")
+    second = get_time(duration, "S")
     hour + ":" + minitue + ":" + second
   end
 
-  def self.get_time(duraction, target)
+  def self.get_time(duration, target)
     regexp = Regexp.new("[0-9]+" + target)
-    items = duraction.match(regexp)
+    items = duration.match(regexp)
     items.blank? ? "0" : items[0].delete(target)
   end
 
