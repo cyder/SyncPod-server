@@ -27,7 +27,7 @@ class Video < ApplicationRecord
 
   def self.calc_movie_start_time(room_id)
     last_movie = Video.order(movie_start_time: :desc).find_by(room_id: room_id)
-    now = Time.now
+    now = Time.now.utc
     if last_movie.blank?
       movie_start_time = now
     else
