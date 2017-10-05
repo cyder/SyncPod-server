@@ -14,7 +14,7 @@ class Video < ApplicationRecord
     results = service.list_videos("snippet, contentDetails", opt)
     item = results.items[0]
     title = item.snippet.title
-    duration = item.content_details.duration
+    duration = change_duration_format(item.content_details.duration)
 
     create! room: Room.find(room_id),
             youtube_video_id: youtube_video_id,
@@ -22,4 +22,20 @@ class Video < ApplicationRecord
             title: title,
             duration: duration
   end
+
+  def self.change_duration_format(duraction)
+    hour = get_time(duraction, "H")
+    minitue = get_time(duraction, "M")
+    second = get_time(duraction, "S")
+    hour + ":" + minitue + ":" + second
+  end
+
+  def self.get_time(duraction, target)
+    regexp = Regexp.new("[0-9]+" + target)
+    items = duraction.match(regexp)
+    items.blank? ? "0" : items[0].delete(target)
+  end
+
+  private_class_method :change_duration_format
+  private_class_method :get_time
 end
