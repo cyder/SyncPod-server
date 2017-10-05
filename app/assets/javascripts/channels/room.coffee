@@ -9,5 +9,5 @@ App.room = App.cable.subscriptions.create "RoomChannel",
     console.log(data)
     # Called when there's incoming data on the websocket for this channel
 
-  add_video: (video_id) ->
-    @perform 'add_video', video_id: video_id
+  add_video: (youtube_video_id) ->
+    @perform 'add_video', youtube_video_id: youtube_video_id
