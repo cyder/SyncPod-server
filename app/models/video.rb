@@ -2,7 +2,10 @@ require "google/apis/youtube_v3"
 
 class Video < ApplicationRecord
   belongs_to :room
-  after_create_commit { AddVideoBroadcastJob.perform_later self }
+  after_create_commit do
+    AddVideoBroadcastJob.perform_later(self)
+    StartVideoBroadcastJob.set(wait_until: self.movie_start_time).perform_later(self)
+  end
 
   def self.add(room_id, youtube_video_id)
     movie_start_time = calc_movie_start_time(room_id)
