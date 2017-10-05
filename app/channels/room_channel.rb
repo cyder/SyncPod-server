@@ -8,6 +8,6 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def add_video(data)
-    Video.add(1, data["video_id"])
+    Video.add(1, data["youtube_video_id"])
   end
 end
