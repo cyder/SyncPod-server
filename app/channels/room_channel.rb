@@ -16,7 +16,7 @@ class RoomChannel < ApplicationCable::Channel
   private
 
     def render_first_json(room_id)
-      now_playing_video = Video.get_now_playing_video room_id
+      now_playing_video = Room.find(room_id).get_now_playing_video
       Jbuilder.encode do |json|
         if now_playing_video.present?
           json.now_playing_video now_playing_video

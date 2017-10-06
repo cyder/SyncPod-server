@@ -8,7 +8,7 @@ class Video < ApplicationRecord
   end
 
   def self.add(room_id, youtube_video_id)
-    video_start_time = calc_video_start_time(room_id)
+    video_start_time = Room.find(room_id).calc_video_start_time
 
     service = Google::Apis::YoutubeV3::YouTubeService.new
     service.key = Settings.google.api_key
@@ -28,27 +28,6 @@ class Video < ApplicationRecord
             title: title
   end
 
-  def self.get_now_playing_video(room_id)
-    last_video = Video.order(video_start_time: :desc).find_by(room_id: room_id)
-    if last_video.blank?
-      nil
-    else
-      (last_video.video_end_time > Time.now.utc) ? last_video : nil
-    end
-  end
-
-  def self.calc_video_start_time(room_id)
-    last_movie = Video.order(video_start_time: :desc).find_by(room_id: room_id)
-    now = Time.now.utc
-    if last_movie.blank?
-      video_start_time = now
-    else
-      last_movie_end_time = last_movie.get_end_time
-      video_start_time = (last_movie_end_time > now) ? last_movie_end_time : now
-    end
-    (video_start_time + Settings.movie.interval)
-  end
-
   def self.calc_video_end_time(video_start_time, duration)
     hour = get_time(duration, "H")
     min = get_time(duration, "M")
@@ -62,7 +41,6 @@ class Video < ApplicationRecord
     items.blank? ? 0 : items[0].delete(target).to_i
   end
 
-  private_class_method :calc_video_start_time
   private_class_method :calc_video_end_time
   private_class_method :get_time
 end
