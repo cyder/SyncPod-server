@@ -28,6 +28,19 @@ class Video < ApplicationRecord
             duration: duration
   end
 
+  def self.get_now_playing_video(room_id)
+    last_video = Video.order(movie_start_time: :desc).find_by(room_id: room_id)
+    if last_video.blank?
+      nil
+    else
+      last_video_end_time = last_video.movie_start_time +
+      last_video.duration.sec +
+      last_video.duration.min * 60 +
+      last_video.duration.hour * 60 * 60
+      (last_video_end_time > Time.now.utc) ? last_video : nil
+    end
+  end
+
   def self.calc_movie_start_time(room_id)
     last_movie = Video.order(movie_start_time: :desc).find_by(room_id: room_id)
     now = Time.now.utc
