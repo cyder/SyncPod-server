@@ -14,11 +14,12 @@ class Room < ApplicationRecord
   end
 
   def get_now_playing_video
-    last_video = videos.order(:video_start_time).last
-    if last_video.blank?
+    condition = "video_end_time > '" + Time.now.utc.to_s(:db) + "'"
+    now_play_video = videos.order(:video_end_time).where(condition).first
+    if now_play_video.blank?
       nil
     else
-      (last_video.video_end_time > Time.now.utc) ? last_video : nil
+      now_play_video
     end
   end
 end
