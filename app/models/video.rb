@@ -4,11 +4,11 @@ class Video < ApplicationRecord
   belongs_to :room
   after_create_commit do
     AddVideoBroadcastJob.perform_later(self)
-    StartVideoBroadcastJob.set(wait_until: self.movie_start_time).perform_later(self)
+    StartVideoBroadcastJob.set(wait_until: self.video_start_time).perform_later(self)
   end
 
   def self.add(room_id, youtube_video_id)
-    movie_start_time = calc_movie_start_time(room_id)
+    video_start_time = Room.find(room_id).calc_video_start_time
 
     service = Google::Apis::YoutubeV3::YouTubeService.new
     service.key = Settings.google.api_key
@@ -19,44 +19,39 @@ class Video < ApplicationRecord
     results = service.list_videos("snippet, contentDetails", opt)
     item = results.items[0]
     title = item.snippet.title
-    duration = change_duration_format(item.content_details.duration)
+    video_end_time = calc_video_end_time(video_start_time, item.content_details.duration)
 
     create! room: Room.find(room_id),
             youtube_video_id: youtube_video_id,
-            movie_start_time: movie_start_time,
-            title: title,
-            duration: duration
+            video_start_time: video_start_time.to_s(:db),
+            video_end_time: video_end_time.to_s(:db),
+            title: title
   end
 
-  def self.calc_movie_start_time(room_id)
-    last_movie = Video.order(movie_start_time: :desc).find_by(room_id: room_id)
-    now = Time.now.utc
-    if last_movie.blank?
-      movie_start_time = now
-    else
-      last_movie_end_time = last_movie.movie_start_time +
-                            last_movie.duration.sec +
-                            last_movie.duration.min * 60 +
-                            last_movie.duration.hour * 60 * 60
-      movie_start_time = (last_movie_end_time > now) ? last_movie_end_time : now
-    end
-    (movie_start_time + Settings.movie.interval).to_s(:db)
-  end
-
-  def self.change_duration_format(duration)
+  def self.calc_video_end_time(video_start_time, duration)
     hour = get_time(duration, "H")
-    minitue = get_time(duration, "M")
-    second = get_time(duration, "S")
-    hour + ":" + minitue + ":" + second
+    min = get_time(duration, "M")
+    sec = get_time(duration, "S")
+    video_start_time + sec + min * 60 + hour * 60 * 60
   end
 
   def self.get_time(duration, target)
     regexp = Regexp.new("[0-9]+" + target)
     items = duration.match(regexp)
-    items.blank? ? "0" : items[0].delete(target)
+    items.blank? ? 0 : items[0].delete(target).to_i
   end
 
-  private_class_method :calc_movie_start_time
-  private_class_method :change_duration_format
+  private_class_method :calc_video_end_time
   private_class_method :get_time
+
+  def current_time
+    now = Time.now.utc
+    if now > video_end_time
+      nil
+    elsif now < video_start_time
+      0
+    else
+      (now - video_start_time).to_i
+    end
+  end
 end

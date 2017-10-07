@@ -22,8 +22,8 @@ ActiveRecord::Schema.define(version: 20171004144656) do
     t.bigint "room_id", null: false
     t.string "youtube_video_id", null: false
     t.string "title"
-    t.time "duration", null: false
-    t.datetime "movie_start_time", null: false
+    t.datetime "video_start_time", null: false
+    t.datetime "video_end_time", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["room_id"], name: "index_videos_on_room_id"
