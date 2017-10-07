@@ -43,4 +43,15 @@ class Video < ApplicationRecord
 
   private_class_method :calc_video_end_time
   private_class_method :get_time
+
+  def get_current_time
+    now = Time.now.utc
+    if now > video_end_time
+      nil
+    elsif now < video_start_time
+      0
+    else
+      (now - video_start_time).to_i
+    end
+  end
 end

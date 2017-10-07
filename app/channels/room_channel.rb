@@ -20,6 +20,7 @@ class RoomChannel < ApplicationCable::Channel
       Jbuilder.encode do |json|
         if now_playing_video.present?
           json.now_playing_video now_playing_video
+          json.current_time now_playing_video.get_current_time
         end
       end
     end
