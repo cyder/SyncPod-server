@@ -2,7 +2,7 @@ class RoomChannel < ApplicationCable::Channel
   def subscribed
     stream_from "room_channel"
     stream_for current_user
-    RoomChannel.broadcast_to current_user, render_first_json(1)
+    RoomChannel.broadcast_to current_user, render_now_playing_video_json(1)
   end
 
   def unsubscribed
@@ -15,12 +15,18 @@ class RoomChannel < ApplicationCable::Channel
 
   private
 
-    def render_first_json(room_id)
+    def render_now_playing_video_json(room_id)
       now_playing_video = Room.find(room_id).now_playing_video
       Jbuilder.encode do |json|
-        if now_playing_video.present?
-          json.now_playing_video now_playing_video
-          json.current_time now_playing_video.current_time
+        json.data_type "now_playing_video"
+        json.data do
+          if now_playing_video.present?
+            json.video now_playing_video,
+                       :id,
+                       :youtube_video_id,
+                       :title,
+                       :current_time
+          end
         end
       end
     end
