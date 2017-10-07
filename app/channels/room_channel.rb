@@ -16,11 +16,11 @@ class RoomChannel < ApplicationCable::Channel
   private
 
     def render_first_json(room_id)
-      now_playing_video = Room.find(room_id).get_now_playing_video
+      now_playing_video = Room.find(room_id).now_playing_video
       Jbuilder.encode do |json|
         if now_playing_video.present?
           json.now_playing_video now_playing_video
-          json.current_time now_playing_video.get_current_time
+          json.current_time now_playing_video.current_time
         end
       end
     end

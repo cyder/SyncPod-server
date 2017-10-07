@@ -44,7 +44,7 @@ class Video < ApplicationRecord
   private_class_method :calc_video_end_time
   private_class_method :get_time
 
-  def get_current_time
+  def current_time
     now = Time.now.utc
     if now > video_end_time
       nil

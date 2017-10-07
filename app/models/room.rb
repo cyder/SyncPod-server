@@ -13,7 +13,7 @@ class Room < ApplicationRecord
     (video_start_time + Settings.movie.interval)
   end
 
-  def get_now_playing_video
+  def now_playing_video
     condition = "video_end_time > '" + Time.now.utc.to_s(:db) + "'"
     now_play_video = videos.order(:video_end_time).where(condition).first
     if now_play_video.blank?
