@@ -9,7 +9,13 @@ class StartVideoBroadcastJob < ApplicationJob
 
     def render_json(video)
       Jbuilder.encode do |json|
-        json.start_video video
+        json.data_type "start_video"
+        json.data do
+          json.video video,
+                     :id,
+                     :youtube_video_id,
+                     :title
+        end
       end
     end
 end
