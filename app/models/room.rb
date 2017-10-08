@@ -22,4 +22,9 @@ class Room < ApplicationRecord
       now_play_video
     end
   end
+
+  def play_list
+    condition = "video_start_time > '" + Time.now.utc.to_s(:db) + "'"
+    videos.order(:video_start_time).where(condition)
+  end
 end
