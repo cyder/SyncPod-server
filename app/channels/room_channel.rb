@@ -41,7 +41,11 @@ class RoomChannel < ApplicationCable::Channel
       Jbuilder.encode do |json|
         json.data_type "play_list"
         json.data do
-          json.play_list room.play_list
+          json.play_list room.play_list,
+                         :id,
+                         :youtube_video_id,
+                         :title,
+                         :video_start_time
         end
       end
     end
