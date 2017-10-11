@@ -19,10 +19,20 @@ class Video < ApplicationRecord
     results = service.list_videos("snippet, contentDetails", opt)
     item = results.items[0]
     title = item.snippet.title
+    channel_title = item.snippet.channel_title
+    thumbnail_url = item.snippet.thumbnails.medium.url
+    duration = item.content_details.duration
+    description = item.snippet.description
+    published = item.snippet.published_at
     video_end_time = calc_video_end_time(video_start_time, item.content_details.duration)
 
     create! room: Room.find(room_id),
             youtube_video_id: youtube_video_id,
+            channel_title: channel_title,
+            thumbnail_url: thumbnail_url,
+            duration: duration,
+            description: description,
+            published: published,
             video_start_time: video_start_time.to_s(:db),
             video_end_time: video_end_time.to_s(:db),
             title: title
