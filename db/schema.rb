@@ -22,6 +22,11 @@ ActiveRecord::Schema.define(version: 20171004144656) do
     t.bigint "room_id", null: false
     t.string "youtube_video_id", null: false
     t.string "title"
+    t.string "channel_title"
+    t.string "thumbnail_url"
+    t.string "duration"
+    t.text "description"
+    t.datetime "published"
     t.datetime "video_start_time", null: false
     t.datetime "video_end_time", null: false
     t.datetime "created_at", null: false
