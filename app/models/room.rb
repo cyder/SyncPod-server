@@ -1,6 +1,31 @@
 class Room < ApplicationRecord
   has_many :videos
 
+  def add_video(youtube_video_id)
+    video_start_time = calc_video_start_time
+
+    service = Google::Apis::YoutubeV3::YouTubeService.new
+    service.key = Settings.google.api_key
+
+    opt = { id: youtube_video_id }
+    results = service.list_videos("snippet, contentDetails", opt)
+    item = results.items[0]
+    snippet = item.snippet
+    duration = item.content_details.duration
+    video_end_time = calc_video_end_time(video_start_time, duration)
+
+    Video.create! room: self,
+                  youtube_video_id: youtube_video_id,
+                  channel_title: snippet.channel_title,
+                  thumbnail_url: snippet.thumbnails.medium.url,
+                  duration: duration,
+                  description: snippet.description,
+                  published: snippet.published_at,
+                  video_start_time: video_start_time.to_s(:db),
+                  video_end_time: video_end_time.to_s(:db),
+                  title: snippet.title
+  end
+
   def calc_video_start_time
     last_movie = videos.order(:video_start_time).last
     now = Time.now.utc
@@ -27,4 +52,19 @@ class Room < ApplicationRecord
     condition = "video_start_time > '" + Time.now.utc.to_s(:db) + "'"
     videos.order(:video_start_time).where(condition)
   end
+
+  private
+
+    def calc_video_end_time(video_start_time, duration)
+      hour = get_time(duration, "H")
+      min = get_time(duration, "M")
+      sec = get_time(duration, "S")
+      video_start_time + sec + min * 60 + hour * 60 * 60
+    end
+
+    def get_time(duration, target)
+      regexp = Regexp.new("[0-9]+" + target)
+      items = duration.match(regexp)
+      items.blank? ? 0 : items[0].delete(target).to_i
+    end
 end

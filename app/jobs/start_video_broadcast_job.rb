@@ -8,9 +8,9 @@ class StartVideoBroadcastJob < ApplicationJob
   private
 
     def render_json(video)
-      ApplicationController.renderer.render('jbuilder/start_video',
-                                             formats: 'json',
-                                             handlers: 'jbuilder',
-                                             locals: { video: video })
+      ApplicationController.renderer.render("jbuilder/start_video",
+                                            formats: "json",
+                                            handlers: "jbuilder",
+                                            locals: { video: video })
     end
 end
