@@ -1,10 +1,12 @@
-json.video video,
-           :id,
-           :youtube_video_id,
-           :title,
-           :channel_title,
-           :thumbnail_url,
-           :duration,
-           :description,
-           :published,
-           :current_time
+json.video do
+  json.extract! video,
+                :id,
+                :youtube_video_id,
+                :title,
+                :channel_title,
+                :thumbnail_url,
+                :duration,
+                :description,
+                :current_time
+  json.published video.published.strftime("%Y/%m/%d")
+end
