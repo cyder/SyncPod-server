@@ -4,14 +4,9 @@ class Room < ApplicationRecord
   def add_video(youtube_video_id)
     video_start_time = calc_video_start_time
 
-    service = Google::Apis::YoutubeV3::YouTubeService.new
-    service.key = Settings.google.api_key
-
-    opt = { id: youtube_video_id }
-    results = service.list_videos("snippet, contentDetails", opt)
-    item = results.items[0]
-    snippet = item.snippet
-    duration = VideoDuration.new(item.content_details.duration)
+    result = Youtube.find(youtube_video_id)
+    snippet = result.snippet
+    duration = VideoDuration.new(result.content_details.duration)
 
     Video.create! room: self,
                   youtube_video_id: youtube_video_id,
