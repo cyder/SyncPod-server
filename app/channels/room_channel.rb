@@ -20,39 +20,22 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def add_video(data)
-    Video.add(1, data["youtube_video_id"])
+    @room.add_video(data["youtube_video_id"])
   end
 
   private
 
     def render_now_playing_video_json(room)
-      video = room.now_playing_video
-      Jbuilder.encode do |json|
-        json.data_type "now_playing_video"
-        json.data do
-          if video.present?
-            json.video video,
-                       :id,
-                       :youtube_video_id,
-                       :title,
-                       :current_time
-          else
-            nil
-          end
-        end
-      end
+      ApplicationController.renderer.render("jbuilder/now_playing_video",
+                                            formats: "json",
+                                            handlers: "jbuilder",
+                                            locals: { video: room.now_playing_video })
     end
 
     def render_play_list_json(room)
-      Jbuilder.encode do |json|
-        json.data_type "play_list"
-        json.data do
-          json.play_list room.play_list,
-                         :id,
-                         :youtube_video_id,
-                         :title,
-                         :video_start_time
-        end
-      end
+      ApplicationController.renderer.render("jbuilder/play_list",
+                                            formats: "json",
+                                            handlers: "jbuilder",
+                                            locals: { videos: room.play_list })
     end
 end
