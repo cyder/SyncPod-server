@@ -3,10 +3,11 @@ class RoomChannel < ApplicationCable::Channel
     stream_from "room_channel"
     stream_for current_user
     @room = Room.find(1)
+    Chat.create! room: @room, chat_type: "login", message: "入室がありました。"
   end
 
   def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
+    Chat.create! room: @room, chat_type: "logout", message: "退室がありました。"
   end
 
   def now_playing_video
@@ -19,8 +20,17 @@ class RoomChannel < ApplicationCable::Channel
                              render_play_list_json(@room)
   end
 
+  def past_chats
+    RoomChannel.broadcast_to current_user,
+                             render_past_chats_json(@room)
+  end
+
   def add_video(data)
     @room.add_video(data["youtube_video_id"])
+  end
+
+  def message(data)
+    Chat.create! room: @room, chat_type: "user", message: data["message"]
   end
 
   private
@@ -37,5 +47,12 @@ class RoomChannel < ApplicationCable::Channel
                                             formats: "json",
                                             handlers: "jbuilder",
                                             locals: { videos: room.play_list })
+    end
+
+    def render_past_chats_json(room)
+      ApplicationController.renderer.render("jbuilder/past_chats",
+                                            formats: "json",
+                                            handlers: "jbuilder",
+                                            locals: { chats: room.past_chats(10) })
     end
 end

@@ -1,5 +1,6 @@
 class Room < ApplicationRecord
   has_many :videos
+  has_many :chats
 
   def add_video(youtube_video_id)
     video_start_time = calc_video_start_time
@@ -45,5 +46,9 @@ class Room < ApplicationRecord
   def play_list
     condition = "video_start_time > '" + Time.now.utc.to_s(:db) + "'"
     videos.order(:video_start_time).where(condition)
+  end
+
+  def past_chats(num)
+    chats.order(:created_at).limit(num)
   end
 end
