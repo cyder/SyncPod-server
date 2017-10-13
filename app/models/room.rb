@@ -47,4 +47,8 @@ class Room < ApplicationRecord
     condition = "video_start_time > '" + Time.now.utc.to_s(:db) + "'"
     videos.order(:video_start_time).where(condition)
   end
+
+  def past_chats(num)
+    chats.order(:created_at).limit(num)
+  end
 end

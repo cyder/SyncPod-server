@@ -20,6 +20,11 @@ class RoomChannel < ApplicationCable::Channel
                              render_play_list_json(@room)
   end
 
+  def past_chats
+    RoomChannel.broadcast_to current_user,
+                             render_past_chats_json(@room)
+  end
+
   def add_video(data)
     @room.add_video(data["youtube_video_id"])
   end
@@ -42,5 +47,12 @@ class RoomChannel < ApplicationCable::Channel
                                             formats: "json",
                                             handlers: "jbuilder",
                                             locals: { videos: room.play_list })
+    end
+
+    def render_past_chats_json(room)
+      ApplicationController.renderer.render("jbuilder/past_chats",
+                                            formats: "json",
+                                            handlers: "jbuilder",
+                                            locals: { chats: room.past_chats(10) })
     end
 end
