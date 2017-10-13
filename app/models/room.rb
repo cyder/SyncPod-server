@@ -1,5 +1,6 @@
 class Room < ApplicationRecord
   has_many :videos
+  has_many :chats
 
   def add_video(youtube_video_id)
     video_start_time = calc_video_start_time

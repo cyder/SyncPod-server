@@ -23,6 +23,10 @@ class RoomChannel < ApplicationCable::Channel
     @room.add_video(data["youtube_video_id"])
   end
 
+  def message(data)
+    Chat.create! room: @room, message: data["message"]
+  end
+
   private
 
     def render_now_playing_video_json(room)

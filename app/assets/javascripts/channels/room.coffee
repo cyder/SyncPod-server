@@ -17,3 +17,6 @@ App.room = App.cable.subscriptions.create "RoomChannel",
 
   add_video: (youtube_video_id) ->
     @perform 'add_video', youtube_video_id: youtube_video_id
+
+  message: (message) ->
+    @perform 'message', message: message
