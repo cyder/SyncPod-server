@@ -3,10 +3,11 @@ class RoomChannel < ApplicationCable::Channel
     stream_from "room_channel"
     stream_for current_user
     @room = Room.find(1)
+    Chat.create! room: @room, chat_type: "login", message: "入室がありました。"
   end
 
   def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
+    Chat.create! room: @room, chat_type: "logout", message: "退室がありました。"
   end
 
   def now_playing_video
