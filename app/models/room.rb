@@ -1,6 +1,6 @@
 class Room < ApplicationRecord
-  has_many :videos
-  has_many :chats
+  has_many :videos, dependent: :destroy
+  has_many :chats, dependent: :destroy
 
   def add_video(youtube_video_id)
     video_start_time = calc_video_start_time
@@ -35,7 +35,7 @@ class Room < ApplicationRecord
 
   def now_playing_video
     condition = "video_end_time > '" + Time.now.utc.to_s(:db) + "'"
-    now_play_video = videos.order(:video_end_time).where(condition).first
+    now_play_video = videos.order(:video_end_time).find_by(condition)
     if now_play_video.blank?
       nil
     else

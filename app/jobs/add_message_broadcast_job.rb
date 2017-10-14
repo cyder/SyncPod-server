@@ -9,9 +9,8 @@ class AddMessageBroadcastJob < ApplicationJob
 
     def render_json(chat)
       ApplicationController.renderer.render("jbuilder/add_chat",
-                                             formats: "json",
-                                             handlers: "jbuilder",
-                                             locals: { chat: chat })
+                                            formats: "json",
+                                            handlers: "jbuilder",
+                                            locals: { chat: chat })
     end
-
 end
