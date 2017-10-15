@@ -1,4 +1,6 @@
 json.data_type "add_chat"
 json.data do
-  json.partial! chat
+  json.chat do
+    json.partial! chat
+  end
 end

@@ -1,4 +1,6 @@
 json.data_type "start_video"
 json.data do
-  json.partial! video
+  json.video do
+    json.partial! video
+  end
 end
