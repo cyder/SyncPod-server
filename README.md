@@ -1,24 +1,87 @@
-# README
+# YouTubeSyncServer
+YouTubeSyncのサーバ用リポジトリです。
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 必要環境
+* Xcode Command line tools
+* [Homebrew](https://brew.sh/index_ja.html)
+* [rbenv](https://github.com/rbenv/rbenv)
+* [Ruby 2.4.1](https://github.com/ruby/ruby)
+* [Ruby on Rails 5.1.2](https://github.com/rails/rails)
+* [bundler](http://bundler.io/)
+* [mysql2 0.4.8](https://github.com/brianmario/mysql2)
+* [editorconfig plugin](http://editorconfig.org/#download)
 
-Things you may want to cover:
+### Xcode Command line tools
+AppStoreからXcodeをインストールし、以下のコマンドを実行する。
+```sh
+xcode-select --install
+```
 
-* Ruby version
+### Homebrew
+```sh
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
 
-* System dependencies
+### rbenv
+```sh
+brew update
+brew install rbenv ruby-build
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' >> ~/.bash_profile
+source ~/.bash_profile
+```
 
-* Configuration
+### Ruby 2.4.1
+```sh
+rbenv install 2.4.1
+```
 
-* Database creation
+### Ruby on rails 5.1.2
+```sh
+gem install rails -v 5.1.2
+```
 
-* Database initialization
+### bundler
+```sh
+gem install bundler
+```
 
-* How to run the test suite
+### mysql
+```sh
+brew install mysql
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+### editorconfig plugin
+[ここ](http://editorconfig.org/#download)からエディタに合わせたものをインストールすること。
 
-* Deployment instructions
+## セットアップ
+1. 次のコマンドを実行する。
+```sh
+git@github.com:Mori-Atsushi/YouTubeSyncServer.git
+cd YouTubeSyncServer
+```
 
-* ...
+2. Gemライブラリをインストールする
+```sh
+bundle install --path=vendor/bundle
+```
+
+3. MySqlを起動する
+```sh
+mysql.server start
+```
+
+4. Databaseを作成する
+```sh
+rails db:create
+rails db:migrate
+rails db:seed
+```
+
+5. サーバを起動する
+```sh
+rails server
+```
+
+## 著者
+* [森 篤史](@Mori-Atsushi)
