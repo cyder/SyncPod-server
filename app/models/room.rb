@@ -49,6 +49,6 @@ class Room < ApplicationRecord
   end
 
   def past_chats(num)
-    chats.order(:created_at).limit(num)
+    chats.order(:created_at).last(num)
   end
 end
