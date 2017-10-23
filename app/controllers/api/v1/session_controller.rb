@@ -4,8 +4,8 @@ class Api::V1::SessionController < ApplicationController
 
   # POST /v1/login
   def create
-    @user = User.find_for_database_authentication(id: params[:user_id])
-    return invalid_user_id unless @user
+    @user = User.find_for_database_authentication(email: params[:email])
+    return invalid_email unless @user
 
     if @user.valid_password?(params[:password])
       sign_in :user, @user
@@ -16,9 +16,9 @@ class Api::V1::SessionController < ApplicationController
 
   private
 
-    def invalid_user_id
+    def invalid_email
       warden.custom_failure!
-      render json: { error: t('invalid_user_id') }
+      render json: { error: t('invalid_email') }
     end
 
     def invalid_password
