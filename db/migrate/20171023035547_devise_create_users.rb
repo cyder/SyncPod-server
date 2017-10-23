@@ -33,7 +33,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.1]
       ## Api
       t.string :access_token
 
-
       t.timestamps null: false
     end
 

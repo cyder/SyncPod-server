@@ -18,11 +18,11 @@ class Api::V1::SessionController < ApplicationController
 
     def invalid_email
       warden.custom_failure!
-      render json: { error: t('invalid_email') }
+      render json: { error: t("invalid_email") }
     end
 
     def invalid_password
       warden.custom_failure!
-      render json: { error: t('invalid_password') }
+      render json: { error: t("invalid_password") }
     end
 end
