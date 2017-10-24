@@ -32,7 +32,10 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def message(data)
-    Chat.create! room: @room, chat_type: "user", message: data["message"]
+    Chat.create! room: @room,
+                 chat_type: "user",
+                 message: data["message"],
+                 user: current_user
   end
 
   private
