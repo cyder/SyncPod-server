@@ -8,7 +8,7 @@
 (function() {
   this.App || (this.App = {});
 
-  let url = ActionCable.INTERNAL.default_mount_path + "?token=1:sMU2AsZ216VkxU-7EkdP";
+  let url = ActionCable.INTERNAL.default_mount_path + "?token=1:KUi1NCeYEArdkCdchzUU";
   App.cable = ActionCable.createConsumer(url);
 
 }).call(this);
