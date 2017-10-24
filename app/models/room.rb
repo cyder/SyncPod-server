@@ -2,7 +2,7 @@ class Room < ApplicationRecord
   has_many :videos, dependent: :destroy
   has_many :chats, dependent: :destroy
 
-  def add_video(youtube_video_id)
+  def add_video(youtube_video_id, user)
     video_start_time = calc_video_start_time
 
     result = Youtube.find(youtube_video_id)
@@ -18,7 +18,8 @@ class Room < ApplicationRecord
                   published: snippet.published_at,
                   video_start_time: video_start_time.to_s(:db),
                   video_end_time: duration.video_end_time(video_start_time).to_s(:db),
-                  title: snippet.title
+                  title: snippet.title,
+                  add_user: user
   end
 
   def calc_video_start_time
