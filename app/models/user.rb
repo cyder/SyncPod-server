@@ -6,6 +6,9 @@ class User < ApplicationRecord
 
   after_create :update_access_token!
 
+  has_many :videos, dependent: :destroy
+  has_many :chats, dependent: :destroy
+
   def update_access_token!
     self.access_token = "#{self.id}:#{Devise.friendly_token}"
     save

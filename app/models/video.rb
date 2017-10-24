@@ -2,6 +2,7 @@ require "google/apis/youtube_v3"
 
 class Video < ApplicationRecord
   belongs_to :room
+  belongs_to :add_user, class_name: "User"
   after_create_commit do
     AddVideoBroadcastJob.perform_later(self)
     StartVideoBroadcastJob.set(wait_until: self.video_start_time).perform_later(self)
