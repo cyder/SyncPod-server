@@ -28,7 +28,7 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def add_video(data)
-    @room.add_video(data["youtube_video_id"])
+    @room.add_video(data["youtube_video_id"], current_user)
   end
 
   def message(data)
