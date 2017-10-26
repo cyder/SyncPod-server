@@ -2,7 +2,7 @@ class StartVideoBroadcastJob < ApplicationJob
   queue_as :default
 
   def perform(video)
-    ActionCable.server.broadcast "room_channel", render_json(video)
+    ActionCable.server.broadcast "room_#{video.room.id}", render_json(video)
     Chat.create! room: video.room,
                  chat_type: "start_video",
                  message: "「" + video.title + "」の再生を開始しました。"

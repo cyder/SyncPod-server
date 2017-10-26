@@ -1,6 +1,9 @@
 class Room < ApplicationRecord
   has_many :videos, dependent: :destroy
   has_many :chats, dependent: :destroy
+  validates :key, uniqueness: true
+
+  before_create :set_room_key
 
   def add_video(youtube_video_id, user)
     video_start_time = calc_video_start_time
@@ -52,4 +55,15 @@ class Room < ApplicationRecord
   def past_chats(num)
     chats.order(:created_at).last(num)
   end
+
+  private
+
+    def set_room_key
+      self.key = generate_key
+    end
+
+    def generate_key
+      tmp_token = SecureRandom.urlsafe_base64(6)
+      self.class.where(key: tmp_token).blank? ? tmp_token : generate_key
+    end
 end

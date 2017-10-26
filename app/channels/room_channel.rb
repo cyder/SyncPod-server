@@ -1,8 +1,8 @@
 class RoomChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "room_channel"
     stream_for current_user
-    @room = Room.find(1)
+    @room = Room.find_by(key: params[:room_key])
+    stream_from "room_#{@room.id}"
     message = current_user.name + "さんが入室しました。"
     Chat.create! room: @room, chat_type: "login", message: message
   end
