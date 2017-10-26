@@ -3,7 +3,7 @@ class Room < ApplicationRecord
   has_many :chats, dependent: :destroy
   validates :key, uniqueness: true
 
-  after_initialize :set_room_key
+  before_create :set_room_key
 
   def add_video(youtube_video_id, user)
     video_start_time = calc_video_start_time
