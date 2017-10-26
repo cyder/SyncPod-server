@@ -1,7 +1,7 @@
 class Room < ApplicationRecord
   has_many :videos, dependent: :destroy
   has_many :chats, dependent: :destroy
-  validates_uniqueness_of :key
+  validates :key, uniqueness: true
 
   after_initialize :set_room_key
 
@@ -64,7 +64,6 @@ class Room < ApplicationRecord
 
     def generate_key
       tmp_token = SecureRandom.urlsafe_base64(6)
-      self.class.where(key: tmp_token).blank? ? tmp_token
-                                              : generate_key
+      self.class.where(key: tmp_token).blank? ? tmp_token : generate_key
     end
 end
