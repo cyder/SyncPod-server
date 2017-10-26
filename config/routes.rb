@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resource :login, only: [:create], controller: :session
       resource :users, only: [:create]
+      resource :room, only: [:create]
     end
   end
 
