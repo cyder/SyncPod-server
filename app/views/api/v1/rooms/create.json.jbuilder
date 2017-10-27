@@ -1,2 +1,2 @@
 json.result "success"
-json.user @room
+json.room @room
