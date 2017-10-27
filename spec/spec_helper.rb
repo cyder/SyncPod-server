@@ -15,6 +15,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require "simplecov"
+require "factory_bot_rails"
 
 SimpleCov.start "rails"
 
