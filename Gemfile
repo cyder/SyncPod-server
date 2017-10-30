@@ -42,9 +42,17 @@ group :development, :test do
   # get a debugger console
   gem "byebug", platforms: %i[mri mingw x64_mingw]
   # Adds support for Capybara system testing and selenium driver
+  gem "autodoc"
   gem "capybara", "~> 2.13"
+  gem "database_rewinder"
+  gem "factory_bot_rails"
+  gem "json_spec"
   gem "onkcop", require: false
+  gem "rspec-rails", "~> 3.5"
+  gem "rspec-request_describer"
+  gem "rubocop"
   gem "selenium-webdriver"
+  gem "simplecov"
 end
 
 group :development do
@@ -54,10 +62,6 @@ group :development do
   gem "web-console", ">= 3.3.0"
   # Spring speeds up development by keeping your application running
   # in the background. Read more: https://github.com/rails/spring
-  gem "factory_bot_rails"
-  gem "rspec-rails", "~> 3.5"
-  gem "rubocop"
-  gem "simplecov"
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
 end

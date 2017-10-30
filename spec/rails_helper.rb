@@ -31,6 +31,22 @@ RSpec.configure do |config|
   config.include ActiveJob::TestHelper
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
+  config.include JsonSpec::Helpers
+  config.include RSpec::RequestDescriber, type: :request
+
+  config.before :all do
+    FactoryBot.reload
+  end
+
+  config.before :suite do
+    DatabaseRewinder.clean_all multiple: false
+  end
+
+  config.after do
+    DatabaseRewinder.clean multiple: false
+  end
+
+  Autodoc.configuration.toc = true
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"

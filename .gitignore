@@ -18,10 +18,6 @@ db/*.sqlite3
 /coverage/
 /db/*.javadb/
 /db/*.sqlite3
-/doc/api/
-/doc/app/
-/doc/features.html
-/doc/specs.html
 /public/cache
 /public/stylesheets/compiled
 /public/system/*
@@ -30,9 +26,6 @@ db/*.sqlite3
 /capybara*
 /capybara-*.html
 /gems
-/spec/requests
-/spec/routing
-/spec/views
 /specifications
 rerun.txt
 pickle-email-*.html
