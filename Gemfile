@@ -42,6 +42,7 @@ group :development, :test do
   # get a debugger console
   gem "byebug", platforms: %i[mri mingw x64_mingw]
   # Adds support for Capybara system testing and selenium driver
+  gem "action-cable-testing"
   gem "autodoc"
   gem "capybara", "~> 2.13"
   gem "database_rewinder"
