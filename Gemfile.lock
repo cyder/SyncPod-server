@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    action-cable-testing (0.1.0)
+      actioncable (~> 5.0)
     actioncable (5.1.4)
       actionpack (= 5.1.4)
       nio4r (~> 2.0)
@@ -42,6 +44,10 @@ GEM
       public_suffix (>= 2.0.2, < 4.0)
     arel (8.0.0)
     ast (2.3.0)
+    autodoc (0.6.2)
+      actionpack
+      activesupport (>= 3.0.0)
+      rspec
     bcrypt (3.1.11)
     bindex (0.5.0)
     builder (3.2.3)
@@ -67,6 +73,7 @@ GEM
       activesupport (>= 3.0)
       deep_merge (~> 1.1.1)
     crass (1.0.2)
+    database_rewinder (0.8.2)
     declarative (0.0.10)
     declarative-option (0.1.0)
     deep_merge (1.1.1)
@@ -80,10 +87,10 @@ GEM
     docile (1.1.5)
     erubi (1.6.1)
     execjs (2.7.0)
-    factory_girl (4.9.0)
+    factory_bot (4.8.2)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.9.0)
-      factory_girl (~> 4.9.0)
+    factory_bot_rails (4.8.2)
+      factory_bot (~> 4.8.2)
       railties (>= 3.0.0)
     faraday (0.13.1)
       multipart-post (>= 1.2, < 3)
@@ -111,6 +118,9 @@ GEM
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
     json (2.1.0)
+    json_spec (1.1.5)
+      multi_json (~> 1.0)
+      rspec (>= 2.0, < 4.0)
     jwt (1.5.6)
     libv8 (3.16.14.19)
     listen (3.1.5)
@@ -192,6 +202,10 @@ GEM
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
     retriable (3.1.1)
+    rspec (3.7.0)
+      rspec-core (~> 3.7.0)
+      rspec-expectations (~> 3.7.0)
+      rspec-mocks (~> 3.7.0)
     rspec-core (3.7.0)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -208,6 +222,8 @@ GEM
       rspec-expectations (~> 3.7.0)
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
+    rspec-request_describer (0.2.1)
+      actionpack (>= 5.0.0)
     rspec-support (3.7.0)
     rubocop (0.49.1)
       parallel (~> 1.10)
@@ -289,20 +305,25 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  action-cable-testing
+  autodoc
   byebug
   capybara (~> 2.13)
   coffee-rails (~> 4.2)
   config
+  database_rewinder
   devise
-  factory_girl_rails
+  factory_bot_rails
   google-api-client (~> 0.11)
   jbuilder (~> 2.5)
+  json_spec
   listen (>= 3.0.5, < 3.2)
   mysql2 (>= 0.3.18, < 0.5)
   onkcop
   puma (~> 3.7)
   rails (~> 5.1.2)
   rspec-rails (~> 3.5)
+  rspec-request_describer
   rubocop
   sass-rails (~> 5.0)
   selenium-webdriver
