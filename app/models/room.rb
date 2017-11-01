@@ -36,8 +36,7 @@ class Room < ApplicationRecord
       video_start_time = now
     else
       last_movie_end_time = last_movie.video_end_time
-      # TODO: maxが使えそう
-      video_start_time = (last_movie_end_time > now) ? last_movie_end_time : now
+      video_start_time = [last_movie_end_time, now].max
     end
     (video_start_time + Settings.movie.interval)
   end
