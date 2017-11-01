@@ -8,6 +8,7 @@ module ApplicationCable
 
     private
 
+      # TODO: nilを返すのが正しいの？
       def find_verified_user
         auth_token = request.params[:token]
 

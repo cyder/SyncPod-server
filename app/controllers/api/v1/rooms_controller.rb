@@ -5,6 +5,7 @@ class Api::V1::RoomsController < ApplicationController
     @room = Room.new room_params
 
     unless @room.save!
+      # TODO: localeファイルに書いておくやつな気がする
       render json: { error: t("room_create_error") }, status: :unprocessable_entity
     end
   end
