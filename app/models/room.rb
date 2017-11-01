@@ -45,8 +45,7 @@ class Room < ApplicationRecord
   def now_playing_video
     # TODO: find_byを使うな scopeにしなさい
     # TODO: ここwhereじゃなくていいの？
-    condition = "video_end_time > '" + Time.now.utc.to_s(:db) + "'"
-    now_play_video = videos.order(:video_end_time).find_by(condition)
+    now_play_video = videos.order(:video_end_time).find_by("video_end_time > ?", Time.now.utc)
     if now_play_video.blank?
       nil
     else
@@ -56,7 +55,7 @@ class Room < ApplicationRecord
 
   # TODO: 複雑なconditionはscopeにしなさい
   def play_list
-    videos.order(:video_start_time).where("video_start_time > ?", Time.now.utc)
+    videos.where("video_start_time > ?", Time.now.utc).order(:video_start_time)
   end
 
   def past_chats(num)
