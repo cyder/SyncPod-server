@@ -56,8 +56,7 @@ class Room < ApplicationRecord
 
   # TODO: 複雑なconditionはscopeにしなさい
   def play_list
-    condition = "video_start_time > '" + Time.now.utc.to_s(:db) + "'"
-    videos.order(:video_start_time).where(condition)
+    videos.order(:video_start_time).where("video_start_time > ?", Time.now.utc)
   end
 
   def past_chats(num)
