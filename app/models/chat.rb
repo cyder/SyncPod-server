@@ -5,4 +5,8 @@ class Chat < ApplicationRecord
     # TODO: このselfって何をさすんだろう。。。
     AddMessageBroadcastJob.perform_later(self)
   end
+
+  scope :latest_by, ->(num) do
+    order(created_at: :desc).limit(num)
+  end
 end

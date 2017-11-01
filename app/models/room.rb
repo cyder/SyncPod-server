@@ -60,9 +60,8 @@ class Room < ApplicationRecord
     videos.order(:video_start_time).where(condition)
   end
 
-  # TODO: order descでlimitをつけなさい
   def past_chats(num)
-    chats.order(created_at: :desc).limit(num).reverse
+    chats.latest_by(num).reverse
   end
 
   private
