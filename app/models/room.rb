@@ -62,7 +62,7 @@ class Room < ApplicationRecord
 
   # TODO: order descでlimitをつけなさい
   def past_chats(num)
-    chats.order(:created_at).last(num)
+    chats.order(created_at: :desc).limit(num).reverse
   end
 
   private
