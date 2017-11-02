@@ -2,6 +2,7 @@ require "rails_helper"
 
 describe Room do
   let(:margin) { 10 }
+  let(:room) { build(:room) }
 
   it "is valid with correct param" do
     room = build(:room)
@@ -11,7 +12,6 @@ describe Room do
   describe "#add_video" do
     subject { room.add_video youtube_video_id, user }
 
-    let(:room) { build(:room) }
     let(:user) { build(:user) }
     let(:youtube_video_id) { "XVId6EOnKq4" }
     it "create video" do
@@ -24,7 +24,6 @@ describe Room do
     subject { room.calc_video_start_time.to_s }
 
     let(:video) { build(:video, room: room, video_start_time: last_video_start_time, video_end_time: last_video_end_time) }
-    let(:room) { build(:room) }
     let(:expectation) { (start_time + Settings.movie.interval).to_s }
 
     context "when room have not videos" do
@@ -53,7 +52,6 @@ describe Room do
     subject { room.now_playing_video }
 
     let(:video) { build(:video, room: room, video_start_time: last_video_start_time, video_end_time: last_video_end_time) }
-    let(:room) { build(:room) }
 
     context "when room have a playing video" do
       let(:last_video_start_time) { Time.now.utc - margin }
@@ -67,6 +65,26 @@ describe Room do
       let(:last_video_end_time) { Time.now.utc - margin }
       before { video.save! }
       it { is_expected.to eq nil }
+    end
+  end
+
+  describe "#last_played_video" do
+    subject { room.last_played_video }
+
+    let(:video) { build(:video, room: room, video_start_time: last_video_start_time, video_end_time: last_video_end_time) }
+
+    context "when room have not played videos" do
+      let(:last_video_start_time) { Time.now.utc - margin }
+      let(:last_video_end_time) { Time.now.utc + margin }
+      before { video.save! }
+      it { is_expected.to eq nil }
+    end
+
+    context "when room have a played video" do
+      let(:last_video_start_time) { Time.now.utc - margin }
+      let(:last_video_end_time) { Time.now.utc - margin }
+      before { video.save! }
+      it { is_expected.to eq video }
     end
   end
 
