@@ -8,22 +8,17 @@ class Room < ApplicationRecord
   def add_video(youtube_video_id, user)
     video_start_time = calc_video_start_time
 
-    result = Youtube.find(youtube_video_id)
-    snippet = result.snippet
-    duration = VideoDuration.new(result.content_details.duration)
+    youtube = Youtube.new(youtube_video_id)
 
     # TODO: youtubeのAPIに依存して気持ち悪いことになってるのでAPIをyoutube modelでwrapした方がよさそう
-    Video.create! room: self,
-                  youtube_video_id: youtube_video_id,
-                  channel_title: snippet.channel_title,
-                  thumbnail_url: snippet.thumbnails.medium.url,
-                  duration: duration.text,
-                  description: snippet.description,
-                  published: snippet.published_at,
-                  video_start_time: video_start_time.to_s(:db),
-                  video_end_time: duration.video_end_time(video_start_time).to_s(:db),
-                  title: snippet.title,
-                  add_user: user
+    Video.create!(
+      room: self,
+      duration: youtube.duration.text,
+      video_start_time: video_start_time.to_s(:db),
+      video_end_time: youtube.duration.video_end_time(video_start_time).to_s(:db),
+      add_user: user,
+      **youtube.to_h,
+    )
   end
 
   # TODO: メソッド名は返す値を示した方がよさげ
