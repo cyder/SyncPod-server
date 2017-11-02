@@ -10,6 +10,14 @@ class Video < ApplicationRecord
     StartVideoBroadcastJob.set(wait_until: self.video_start_time).perform_later(self)
   end
 
+  scope :not_started_yet, -> do
+    where("video_start_time > ?", Time.now.utc)
+  end
+
+  scope :order_by_start, ->(sort = :asc) do
+    order(video_start_time: sort)
+  end
+
   # TODO: これなんとかなるやろ
   def current_time
     now = Time.now.utc

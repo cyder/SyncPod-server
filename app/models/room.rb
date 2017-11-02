@@ -44,9 +44,8 @@ class Room < ApplicationRecord
     videos.order(:video_end_time).where("video_end_time > ?", Time.now.utc).take
   end
 
-  # TODO: 複雑なconditionはscopeにしなさい
   def play_list
-    videos.where("video_start_time > ?", Time.now.utc).order(:video_start_time)
+    videos.not_started_yet.order_by_start
   end
 
   def past_chats(num)
