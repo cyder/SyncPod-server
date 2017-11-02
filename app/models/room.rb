@@ -37,6 +37,10 @@ class Room < ApplicationRecord
     videos.not_started_yet.order_by_start
   end
 
+  def last_played_video
+    videos.ended.order_by_end.last
+  end
+
   def past_chats(num)
     chats.latest_by(num).reverse
   end
