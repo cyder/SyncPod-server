@@ -10,7 +10,6 @@ class Room < ApplicationRecord
 
     youtube = Youtube.new(youtube_video_id)
 
-    # TODO: youtubeのAPIに依存して気持ち悪いことになってるのでAPIをyoutube modelでwrapした方がよさそう
     Video.create!(
       room: self,
       duration: youtube.duration.text,

@@ -1,6 +1,3 @@
-# TODO: このrequireいらんくないか？
-require "google/apis/youtube_v3"
-
 class Video < ApplicationRecord
   belongs_to :room
   belongs_to :add_user, class_name: "User"
