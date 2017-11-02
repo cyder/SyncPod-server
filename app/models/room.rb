@@ -31,17 +31,17 @@ class Room < ApplicationRecord
     # TODO: 毎回呼んでるっぽいのでindex貼るべき
     last_video = videos.order(:video_start_time).last
     now = Time.now.utc
-    if last_video.blank?
-      video_start_time = now
-    else
-      video_start_time = [last_video.video_end_time, now].max
-    end
+    video_start_time = if last_video.blank?
+                         now
+                       else
+                         [last_video.video_end_time, now].max
+                       end
     (video_start_time + Settings.movie.interval)
   end
 
   def now_playing_video
-    # TODO: find_byを使うな scopeにしなさい
-    videos.order(:video_end_time).where("video_end_time > ?", Time.now.utc).take
+    # TODO: scopeにしなさい
+    videos.order(:video_end_time).find_by("video_end_time > ?", Time.now.utc)
   end
 
   def play_list

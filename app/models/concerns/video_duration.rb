@@ -9,6 +9,7 @@ class VideoDuration
     # TODO: ほんまか？
     video_start_time + @sec + @min * 60 + @hour * 60 * 60
   end
+
   # TODO: これもなんとかなりそう
   def text
     result = ""
@@ -27,6 +28,7 @@ class VideoDuration
   end
 
   private
+
     # TODO: これなんとかなりそうな気がする
     def get_time(duration, target)
       regexp = Regexp.new("[0-9]+" + target)
