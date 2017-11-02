@@ -42,8 +42,7 @@ class Room < ApplicationRecord
   # TODO: なんかここ色々やばいぞ
   def now_playing_video
     # TODO: find_byを使うな scopeにしなさい
-    # TODO: ここwhereじゃなくていいの？
-    videos.order(:video_end_time).find_by("video_end_time > ?", Time.now.utc)
+    videos.order(:video_end_time).where("video_end_time > ?", Time.now.utc).take
   end
 
   # TODO: 複雑なconditionはscopeにしなさい
