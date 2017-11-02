@@ -14,8 +14,16 @@ class Video < ApplicationRecord
     where("video_start_time > ?", Time.now.utc)
   end
 
+  scope :not_ended_yet, -> do
+    where("video_end_time > ?", Time.now.utc)
+  end
+
   scope :order_by_start, ->(sort = :asc) do
     order(video_start_time: sort)
+  end
+
+  scope :order_by_end, ->(sort = :asc) do
+    order(video_end_time: sort)
   end
 
   # TODO: これなんとかなるやろ

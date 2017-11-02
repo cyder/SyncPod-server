@@ -40,8 +40,8 @@ class Room < ApplicationRecord
   end
 
   def now_playing_video
-    # TODO: scopeにしなさい
-    videos.order(:video_end_time).find_by("video_end_time > ?", Time.now.utc)
+    # 1つのroomでは複数のvideoを同時再生されない
+    videos.not_ended_yet.order_by_end.take
   end
 
   def play_list
