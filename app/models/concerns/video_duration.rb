@@ -8,7 +8,9 @@ class VideoDuration
   end
 
   def text
-    @time.strftime((@time.hour == 0) ? "%M:%S" : "%I:%M:%S")
+    str = @time.strftime((@time.hour == 0) ? "%M:%S" : "%I:%M:%S")
+    str.slice!(0) if str[0] == "0"
+    str
   end
 
   private
