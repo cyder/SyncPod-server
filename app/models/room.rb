@@ -23,14 +23,9 @@ class Room < ApplicationRecord
 
   # TODO: メソッド名は返す値を示した方がよさげ
   def calc_video_start_time
-    # TODO: 毎回呼んでるっぽいのでindex貼るべき
     last_video = videos.order(:video_start_time).last
     now = Time.now.utc
-    video_start_time = if last_video.blank?
-                         now
-                       else
-                         [last_video.video_end_time, now].max
-                       end
+    video_start_time = last_video.blank? ? now : [last_video.video_end_time, now].max
     (video_start_time + Settings.movie.interval)
   end
 
