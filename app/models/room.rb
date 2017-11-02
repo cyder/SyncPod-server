@@ -14,8 +14,8 @@ class Room < ApplicationRecord
     Video.create!(
       room: self,
       duration: youtube.duration.text,
-      video_start_time: video_start_time.to_s(:db),
-      video_end_time: youtube.duration.video_end_time(video_start_time).to_s(:db),
+      video_start_time: video_start_time,
+      video_end_time: youtube.duration.video_end_time(video_start_time),
       add_user: user,
       **youtube.to_h,
     )

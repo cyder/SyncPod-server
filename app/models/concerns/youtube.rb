@@ -2,8 +2,7 @@ require "google/apis/youtube_v3"
 
 class Youtube
   include AttrAccessorExtension
-  # このクラスでYoutubeAPIをきちんとラップしたい
-  # **youtube.to_hみたいな感じで
+
   attr_reader :youtube_video_id,
               :channel_title,
               :duration,
