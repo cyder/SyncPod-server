@@ -18,11 +18,13 @@ class Api::V1::SessionController < ApplicationController
 
     def invalid_email
       warden.custom_failure!
+      # TODO: locale見当たらない
       render json: { error: t("invalid_email") }
     end
 
     def invalid_password
       warden.custom_failure!
+      # TODO: locale見当たらない
       render json: { error: t("invalid_password") }
     end
 end

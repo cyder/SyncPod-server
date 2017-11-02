@@ -8,52 +8,37 @@ class Room < ApplicationRecord
   def add_video(youtube_video_id, user)
     video_start_time = calc_video_start_time
 
-    result = Youtube.find(youtube_video_id)
-    snippet = result.snippet
-    duration = VideoDuration.new(result.content_details.duration)
+    youtube = Youtube.new(youtube_video_id)
 
-    Video.create! room: self,
-                  youtube_video_id: youtube_video_id,
-                  channel_title: snippet.channel_title,
-                  thumbnail_url: snippet.thumbnails.medium.url,
-                  duration: duration.text,
-                  description: snippet.description,
-                  published: snippet.published_at,
-                  video_start_time: video_start_time.to_s(:db),
-                  video_end_time: duration.video_end_time(video_start_time).to_s(:db),
-                  title: snippet.title,
-                  add_user: user
+    Video.create!(
+      room: self,
+      duration: youtube.duration.text,
+      video_start_time: video_start_time,
+      video_end_time: youtube.duration.video_end_time(video_start_time),
+      add_user: user,
+      **youtube.to_h,
+    )
   end
 
+  # TODO: メソッド名は返す値を示した方がよさげ
   def calc_video_start_time
-    last_movie = videos.order(:video_start_time).last
+    last_video = videos.order(:video_start_time).last
     now = Time.now.utc
-    if last_movie.blank?
-      video_start_time = now
-    else
-      last_movie_end_time = last_movie.video_end_time
-      video_start_time = (last_movie_end_time > now) ? last_movie_end_time : now
-    end
+    video_start_time = last_video.blank? ? now : [last_video.video_end_time, now].max
     (video_start_time + Settings.movie.interval)
   end
 
   def now_playing_video
-    condition = "video_end_time > '" + Time.now.utc.to_s(:db) + "'"
-    now_play_video = videos.order(:video_end_time).find_by(condition)
-    if now_play_video.blank?
-      nil
-    else
-      now_play_video
-    end
+    # 1つのroomでは複数のvideoを同時再生されない
+    videos.not_ended_yet.order_by_end.take
   end
 
   def play_list
-    condition = "video_start_time > '" + Time.now.utc.to_s(:db) + "'"
-    videos.order(:video_start_time).where(condition)
+    videos.not_started_yet.order_by_start
   end
 
   def past_chats(num)
-    chats.order(:created_at).last(num)
+    chats.latest_by(num).reverse
   end
 
   private
@@ -64,6 +49,6 @@ class Room < ApplicationRecord
 
     def generate_key
       tmp_token = SecureRandom.urlsafe_base64(6)
-      self.class.where(key: tmp_token).blank? ? tmp_token : generate_key
+      self.class.exists?(key: tmp_token) ? generate_key : tmp_token
     end
 end

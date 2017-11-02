@@ -45,6 +45,7 @@ module ApiCommon
     # Authentication Failure
     # Renders a 401 error
     def authenticate_error
+      # TODO: locale見当たらない
       render json: { error: t("devise.failure.unauthenticated") }, status: 401
     end
 end

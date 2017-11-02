@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171024080238) do
+ActiveRecord::Schema.define(version: 20171102151632) do
 
   create_table "chats", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "room_id", null: false
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 20171024080238) do
     t.bigint "add_user_id", null: false
     t.index ["add_user_id"], name: "index_videos_on_add_user_id"
     t.index ["room_id"], name: "index_videos_on_room_id"
+    t.index ["video_start_time"], name: "index_videos_on_video_start_time"
   end
 
   add_foreign_key "chats", "users"

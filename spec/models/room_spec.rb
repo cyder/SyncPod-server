@@ -13,7 +13,7 @@ describe Room do
 
     let(:room) { build(:room) }
     let(:user) { build(:user) }
-    let(:youtube_video_id) { "AS4q9yaWJkI" }
+    let(:youtube_video_id) { "XVId6EOnKq4" }
     it "create video" do
       expect { subject }.to change { Video.count }.by(1)
     end
