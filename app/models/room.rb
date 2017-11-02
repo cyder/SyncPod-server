@@ -39,7 +39,6 @@ class Room < ApplicationRecord
     (video_start_time + Settings.movie.interval)
   end
 
-  # TODO: なんかここ色々やばいぞ
   def now_playing_video
     # TODO: find_byを使うな scopeにしなさい
     videos.order(:video_end_time).where("video_end_time > ?", Time.now.utc).take
@@ -56,14 +55,12 @@ class Room < ApplicationRecord
 
   private
 
-    # TODO: よくわからんけどこれメソッド化する必要あるか？
     def set_room_key
       self.key = generate_key
     end
 
-    # TODO: 再帰っぽいけど正しいのか...?
     def generate_key
       tmp_token = SecureRandom.urlsafe_base64(6)
-      self.class.where(key: tmp_token).blank? ? tmp_token : generate_key
+      self.class.exists?(key: tmp_token) ? generate_key : tmp_token
     end
 end
