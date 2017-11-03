@@ -1,2 +1,4 @@
 json.result "success"
-json.room @room
+json.room do
+  json.partial! @room
+end

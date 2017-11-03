@@ -10,6 +10,13 @@ class Api::V1::RoomsController < ApplicationController
     end
   end
 
+  def show
+    @room = Room.find_by(id: params[:id])
+    if @room.blank?
+      render json: { error: t("404 error") }, status: 404
+    end
+  end
+
   private
 
     def room_params
