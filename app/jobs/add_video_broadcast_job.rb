@@ -3,10 +3,6 @@ class AddVideoBroadcastJob < ApplicationJob
 
   def perform(video)
     ActionCable.server.broadcast "room_#{video.room.id}", render_json(video)
-    message = video.add_user.name + "さんが「" + video.title + "」を追加しました。"
-    Chat.create! room: video.room,
-                 chat_type: "add_video",
-                 message: message
   end
 
   private

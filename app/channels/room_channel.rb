@@ -28,7 +28,13 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def add_video(data)
-    @room.add_video(data["youtube_video_id"], current_user)
+    video = @room.add_video(data["youtube_video_id"], current_user)
+    video.present? do
+      message = video.add_user.name + "さんが「" + video.title + "」を追加しました。"
+      Chat.create! room: video.room,
+                   chat_type: "add_video",
+                   message: message
+    end
   end
 
   def message(data)
