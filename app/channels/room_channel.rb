@@ -29,12 +29,13 @@ class RoomChannel < ApplicationCable::Channel
 
   def add_video(data)
     video = @room.add_video(data["youtube_video_id"], current_user)
-    video.present? do
-      message = video.add_user.name + "さんが「" + video.title + "」を追加しました。"
-      Chat.create! room: video.room,
-                   chat_type: "add_video",
-                   message: message
-    end
+    return video if video.blank?
+    add_message = video.add_user.name + "さんが「" + video.title + "」を追加しました。"
+    Chat.create! room: video.room,
+                 chat_type: "add_video",
+                 message: add_message
+    start_message = "「" + video.title + "」の再生を開始しました。"
+    MessageReservationJob.set(wait_until: video.video_start_time).perform_later("start_video", start_message, video.room)
   end
 
   def message(data)
