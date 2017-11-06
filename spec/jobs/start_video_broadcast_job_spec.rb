@@ -15,8 +15,14 @@ describe StartVideoBroadcastJob, type: :job do
     subject { perform_enqueued_jobs { StartVideoBroadcastJob.perform_later(video) } }
 
     it "expect to have broadcast" do
-      expect { subject }.to have_broadcasted_to(target).exactly(2).with { |data|
-                              expect(data).to have_json_path("data_type")
+      expect { subject }.to have_broadcasted_to(target).with { |data|
+                              expect(data).to be_json_eql(%("start_video")).at_path("data_type")
+                            }
+    end
+
+    it "expect to have broadcast with video" do
+      expect { subject }.to have_broadcasted_to(target).with { |data|
+                              expect(data).to be_json_eql(video.id).at_path("data/video/id")
                             }
     end
   end
