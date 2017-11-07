@@ -20,6 +20,8 @@ describe RoomChannel, type: :channel do
         expect(streams).to include(stream_from)
       end
       it { expect { subject }.to change(Chat, :count).by(1) }
+      it { expect { subject }.to change(UserRoomLog, :count).by(1) }
+      it { expect { subject }.to change{ room.online_users.count }.by(1) }
     end
   end
 
@@ -28,6 +30,7 @@ describe RoomChannel, type: :channel do
 
     before { subscribe room_key: room.key }
     it { expect { subject }.to change(Chat, :count).by(1) }
+    it { expect { subject }.to change{ room.online_users.count }.by(-1) }
   end
 
   describe "perform :now_playint_video" do
