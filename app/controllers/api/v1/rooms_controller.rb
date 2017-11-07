@@ -1,6 +1,15 @@
 class Api::V1::RoomsController < ApplicationController
   include ApiCommon
 
+  def index
+    @room = Room.find_by(key: params[:room_key])
+    if @room.blank?
+      render json: { error: t("404 error") }, status: 404
+      return
+    end
+    render :show
+  end
+
   def create
     @room = Room.new room_params
 
