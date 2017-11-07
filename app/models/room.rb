@@ -12,11 +12,10 @@ class Room < ApplicationRecord
 
     Video.create!(
       room: self,
-      duration: youtube.duration.text,
       video_start_time: video_start_time,
       video_end_time: youtube.duration.video_end_time(video_start_time),
       add_user: user,
-      **youtube.to_h,
+      **youtube.create_params.to_h
     )
   end
 

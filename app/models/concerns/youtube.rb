@@ -22,4 +22,15 @@ class Youtube
     @published = result.snippet.published_at
     @title = result.snippet.title
   end
+
+  def create_params
+    [
+      [:youtube_video_id, @youtube_video_id],
+      [:channel_title, @channel_title],
+      [:thumbnail_url, @thumbnail_url],
+      [:duration, @duration.text],
+      [:published, @published],
+      [:title, @title]
+    ]
+  end
 end
