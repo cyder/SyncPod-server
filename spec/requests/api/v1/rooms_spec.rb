@@ -86,6 +86,17 @@ describe "room" do
         expect(body).to be_json_eql(video.id).at_path("room/last_played_video/id")
       end
     end
+
+    context "when room has a online user" do
+      let(:log) { build(:user_room_log, user: user, room: room, exit_at: nil) }
+      before { log.save! }
+      it "returns a online user" do
+        is_expected.to eq 200
+        body = response.body
+        expect(body).to have_json_path("room/online_users/0")
+        expect(body).to be_json_eql(user.id).at_path("room/online_users/0/id")
+      end
+    end
   end
 
   describe "GET /api/v1/rooms" do
