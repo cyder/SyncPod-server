@@ -18,12 +18,18 @@ class Youtube
     result = service.list_videos("snippet, contentDetails, statistics", { id: id }).items[0]
 
     @youtube_video_id = id
-    @channel_title = result.snippet.channel_title
-    @thumbnail_url = result.snippet.thumbnails.medium.url
     @time = VideoDuration.new(result.content_details.duration)
-    @published = result.snippet.published_at
-    @description = result.snippet.description
     @view_count = result.statistics.view_count
-    @title = result.snippet.title
+    analyze_snippet(result.snippet)
   end
+
+  private
+
+    def analyze_snippet(snippet)
+      @channel_title = snippet.channel_title
+      @thumbnail_url = snippet.thumbnails.medium.url
+      @published = snippet.published_at
+      @description = snippet.description
+      @title = snippet.title
+    end
 end
