@@ -68,6 +68,10 @@ describe RoomChannel, type: :channel do
 
     before { subscribe room_key: room.key }
     it { expect { subject }.to change(Video, :count).by(1) }
+    it { expect { subject }.to change(Chat, :count).by(1) }
+    it "is sends add_message_broadcast_job" do
+      assert_enqueued_with(job: MessageReservationJob) { subject }
+    end
   end
 
   describe "perform :message" do
