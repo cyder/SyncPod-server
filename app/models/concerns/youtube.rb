@@ -30,7 +30,7 @@ class Youtube
       [:thumbnail_url, @thumbnail_url],
       [:duration, @duration.text],
       [:published, @published],
-      [:title, @title]
+      [:title, @title],
     ]
   end
 end
