@@ -36,7 +36,6 @@ describe "room" do
 
     context "without sign in" do
       let(:headers) { { "Authorization" => nil } }
-      let(:params) { { room: attributes_for(:room) } }
       it "returns a error message" do
         is_expected.to eq 401
         expect(body).to have_json_path("error")
