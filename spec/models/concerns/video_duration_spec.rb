@@ -14,14 +14,32 @@ describe VideoDuration do
     end
 
     context "when duration = 0:05:00" do
-      let(:arg) { "PT5M0S" }
+      let(:arg) { "PT5M" }
       let(:arg_second) { 5 * 60 }
       it { is_expected.to eq expectation }
     end
 
+    context "when duration = 0:05:05" do
+      let(:arg) { "PT5M5S" }
+      let(:arg_second) { 5 * 60 + 5 }
+      it { is_expected.to eq expectation }
+    end
+
     context "when duration = 5:00:00" do
-      let(:arg) { "PT5H0M0S" }
+      let(:arg) { "PT5H" }
       let(:arg_second) { 5 * 60 * 60 }
+      it { is_expected.to eq expectation }
+    end
+
+    context "when duration = 5:05:00" do
+      let(:arg) { "PT5H5M" }
+      let(:arg_second) { (5 * 60 + 5) * 60 }
+      it { is_expected.to eq expectation }
+    end
+
+    context "when duration = 5:00:05" do
+      let(:arg) { "PT5H5S" }
+      let(:arg_second) { 5 * 60 * 60 + 5 }
       it { is_expected.to eq expectation }
     end
   end
@@ -35,12 +53,12 @@ describe VideoDuration do
     end
 
     context "when duration = 0:05:00" do
-      let(:arg) { "PT5M0S" }
+      let(:arg) { "PT5M" }
       it { is_expected.to eq "5:00" }
     end
 
     context "when duration = 5:00:00" do
-      let(:arg) { "PT5H0M0S" }
+      let(:arg) { "PT5H" }
       it { is_expected.to eq "5:00:00" }
     end
   end
@@ -54,12 +72,12 @@ describe VideoDuration do
     end
 
     context "when duration = 0:05:00" do
-      let(:arg) { "PT5M0S" }
+      let(:arg) { "PT5M" }
       it { is_expected.to eq [0, 5, 0] }
     end
 
     context "when duration = 5:00:00" do
-      let(:arg) { "PT5H0M0S" }
+      let(:arg) { "PT5H" }
       it { is_expected.to eq [5, 0, 0] }
     end
   end
