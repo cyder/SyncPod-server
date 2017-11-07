@@ -77,4 +77,23 @@ describe "room" do
       end
     end
   end
+
+  describe "GET /api/v1/rooms" do
+    let!(:room) { create(:room) }
+    let(:params) { { room_key: room.key } }
+
+    context "with invalid room key" do
+      let(:params) { { room_key: "invalid_id" } }
+      it { is_expected.to eq 404 }
+    end
+
+    context "with valid room key" do
+      it "returns a room", :autodoc do
+        is_expected.to eq 200
+        body = response.body
+        expect(body).to have_json_path("room")
+        expect(body).to be_json_eql(%("#{room.key}")).at_path("room/key")
+      end
+    end
+  end
 end
