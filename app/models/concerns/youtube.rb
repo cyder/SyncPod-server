@@ -9,6 +9,7 @@ class Youtube
               :thumbnail_url,
               :published,
               :description,
+              :view_count,
               :title
 
   def initialize(id)
@@ -22,6 +23,7 @@ class Youtube
     @time = VideoDuration.new(result.content_details.duration)
     @published = result.snippet.published_at
     @description = result.snippet.description
+    @view_count = result.statistics.view_count
     @title = result.snippet.title
   end
 end
