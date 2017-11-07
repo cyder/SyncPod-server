@@ -48,6 +48,10 @@ class Room < ApplicationRecord
     chats.latest_by(num).reverse
   end
 
+  def online_users
+    user_room_log.where(exit_at: nil).map{ |log| log.user }.uniq
+  end
+
   private
 
     def set_room_key
