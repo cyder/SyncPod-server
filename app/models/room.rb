@@ -2,6 +2,8 @@ class Room < ApplicationRecord
   has_many :videos, dependent: :destroy
   has_many :chats, dependent: :destroy
   validates :key, uniqueness: true
+  validates :name, presence: true
+  validates :description, presence: true
 
   before_create :set_room_key
 

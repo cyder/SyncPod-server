@@ -12,10 +12,9 @@ class Api::V1::RoomsController < ApplicationController
 
   def create
     @room = Room.new room_params
-
-    unless @room.save!
+    unless @room.save
       # TODO: localeファイルに書いておくやつな気がする
-      render json: { error: t("room_create_error") }, status: :unprocessable_entity
+      render json: { error: t("room_create_error") }, status: 400
     end
   end
 

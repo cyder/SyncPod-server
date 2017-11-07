@@ -6,9 +6,20 @@ describe "room" do
 
   describe "POST /api/v1/rooms" do
     let(:room) { build(:room) }
+    let(:params) { { room: { name: name, description: description } } }
+    let(:name) { room.name }
+    let(:description) { room.description }
+
+    context "with invalid params" do
+      let(:name) { nil }
+      it "returns a error" do
+        is_expected.to eq 400
+        body = response.body
+        expect(body).to have_json_path("error")
+      end
+    end
 
     context "with valid params" do
-      let(:params) { { room: attributes_for(:room) } }
       it "returns a room", :autodoc do
         is_expected.to eq 200
         body = response.body
@@ -25,7 +36,6 @@ describe "room" do
 
     context "without sign in" do
       let(:headers) { { "Authorization" => nil } }
-      let(:params) { { room: attributes_for(:room) } }
       it "returns a error message" do
         is_expected.to eq 401
         expect(body).to have_json_path("error")

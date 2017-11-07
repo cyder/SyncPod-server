@@ -9,9 +9,9 @@ class Api::V1::UsersController < ApplicationController
     @user = User.new user_params
 
     # TODO: !をつけたらraiseでこけるのでは
-    unless @user.save!
+    unless @user.save
       # TODO: locale見当たらない
-      render json: { error: t("user_create_error") }, status: :unprocessable_entity
+      render json: { error: t("user_create_error") }, status: 400
     end
   end
 
