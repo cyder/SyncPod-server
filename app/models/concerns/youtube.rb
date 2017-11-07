@@ -5,7 +5,7 @@ class Youtube
 
   attr_reader :youtube_video_id,
               :channel_title,
-              :duration,
+              :time,
               :thumbnail_url,
               :published,
               :title
@@ -18,19 +18,8 @@ class Youtube
     @youtube_video_id = id
     @channel_title = result.snippet.channel_title
     @thumbnail_url = result.snippet.thumbnails.medium.url
-    @duration = VideoDuration.new(result.content_details.duration)
+    @time = VideoDuration.new(result.content_details.duration)
     @published = result.snippet.published_at
     @title = result.snippet.title
-  end
-
-  def create_params
-    [
-      [:youtube_video_id, @youtube_video_id],
-      [:channel_title, @channel_title],
-      [:thumbnail_url, @thumbnail_url],
-      [:duration, @duration.text],
-      [:published, @published],
-      [:title, @title],
-    ]
   end
 end
