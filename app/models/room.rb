@@ -14,11 +14,11 @@ class Room < ApplicationRecord
 
     Video.create!(
       room: self,
-      duration: youtube.duration.text,
+      duration: youtube.time.text,
       video_start_time: video_start_time,
-      video_end_time: youtube.duration.video_end_time(video_start_time),
+      video_end_time: youtube.time.video_end_time(video_start_time),
       add_user: user,
-      **youtube.to_h,
+      **youtube.to_h.except(:time),
     )
   end
 

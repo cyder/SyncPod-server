@@ -14,8 +14,11 @@ class VideoDuration
   private
 
     def duration_to_array(duration)
-      duration.split(/[A-Z]/).
-        map(&:to_i).
-        last(3)
+      %w[H M S].map { |time| get_time(duration, time) }
+    end
+
+    def get_time(duration, target)
+      items = duration.match(/[0-9]+#{target}/)
+      items.blank? ? 0 : items.to_s.delete(target).to_i
     end
 end
