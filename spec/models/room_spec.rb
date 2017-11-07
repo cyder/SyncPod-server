@@ -134,6 +134,7 @@ describe Room do
 
   describe "#online_users" do
     subject { room.online_users }
+
     let(:user1) { build(:user1) }
     let(:user2) { build(:user2) }
     let(:user3) { build(:user3) }

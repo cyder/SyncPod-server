@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe UserRoomLog, type: :model do
   it "is valid with correct param" do
