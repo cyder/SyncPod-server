@@ -2,9 +2,38 @@ require "rails_helper"
 
 describe "POST /api/v1/users" do
   let(:user) { build(:user) }
+  let(:params) { { user: { email: email, password: password } } }
+  let(:email) { user.email }
+  let(:password) { user.password }
+
+  context "with invalid email" do
+    let(:email) { nil }
+    it "returns a error" do
+      is_expected.to eq 400
+      body = response.body
+      expect(body).to have_json_path("error")
+    end
+  end
+
+  context "with existed email" do
+    before { user.save! }
+    it "returns a error" do
+      is_expected.to eq 400
+      body = response.body
+      expect(body).to have_json_path("error")
+    end
+  end
+
+  context "with invalid password" do
+    let(:password) { nil }
+    it "returns a error" do
+      is_expected.to eq 400
+      body = response.body
+      expect(body).to have_json_path("error")
+    end
+  end
 
   context "with valid params" do
-    let(:params) { { user: attributes_for(:user) } }
     it "returns a user", :autodoc do
       is_expected.to eq 200
       body = response.body

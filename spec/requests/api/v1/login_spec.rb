@@ -22,7 +22,7 @@ describe "POST /api/v1/login" do
   context "with invalid password" do
     let(:params) { { email: user.email, password: "invalid_password" } }
     it "returns a error message" do
-      is_expected.to eq 200
+      is_expected.to eq 400
       body = response.body
       expect(body).to have_json_path("error")
     end
@@ -31,7 +31,7 @@ describe "POST /api/v1/login" do
   context "with invalid email" do
     let(:params) { { email: "invalid@example.com", password: user.password } }
     it "returns a error message" do
-      is_expected.to eq 200
+      is_expected.to eq 400
       body = response.body
       expect(body).to have_json_path("error")
     end
