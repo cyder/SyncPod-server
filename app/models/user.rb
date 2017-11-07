@@ -8,7 +8,7 @@ class User < ApplicationRecord
 
   has_many :videos, dependent: :destroy
   has_many :chats, dependent: :destroy
-  has_many :user_room_log, dependent: :destroy
+  has_many :user_room_logs, dependent: :destroy
 
   def update_access_token!
     self.access_token = "#{self.id}:#{Devise.friendly_token}"

@@ -1,7 +1,7 @@
 class Room < ApplicationRecord
   has_many :videos, dependent: :destroy
   has_many :chats, dependent: :destroy
-  has_many :user_room_log, dependent: :destroy
+  has_many :user_room_logs, dependent: :destroy
   validates :key, uniqueness: true
   validates :name, presence: true
   validates :description, presence: true
@@ -49,7 +49,7 @@ class Room < ApplicationRecord
   end
 
   def online_users
-    user_room_log.where(exit_at: nil).map{ |log| log.user }.uniq
+    user_room_logs.where(exit_at: nil).map{ |log| log.user }.uniq
   end
 
   private
