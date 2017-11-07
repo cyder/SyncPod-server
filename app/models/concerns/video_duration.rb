@@ -14,15 +14,11 @@ class VideoDuration
   private
 
     def duration_to_array(duration)
-      hour = get_time(duration, "H")
-      min = get_time(duration, "M")
-      sec = get_time(duration, "S")
-      [hour, min, sec]
+      %w[H M S].map { |time| get_time(duration, time) }
     end
 
     def get_time(duration, target)
-      regexp = Regexp.new("[0-9]+" + target)
-      items = duration.match(regexp)
-      items.blank? ? 0 : items[0].delete(target).to_i
+      items = duration.match(/[0-9]+#{target}/)
+      items.blank? ? 0 : items.to_s.delete(target).to_i
     end
 end
