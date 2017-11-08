@@ -11,8 +11,7 @@ class RoomChannel < ApplicationCable::Channel
   def unsubscribed
     message = current_user.name + "さんが退室しました。"
     Chat.create! room: @room, chat_type: "logout", message: message
-    log = UserRoomLog.find_by(user: current_user, room: @room, exit_at: nil)
-    log.update(exit_at: Time.now.utc)
+    UserRoomLog.find_by!(user: current_user, room: @room, exit_at: nil).update(exit_at: Time.now.utc)
   end
 
   def now_playing_video
