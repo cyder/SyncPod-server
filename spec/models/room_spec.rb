@@ -131,4 +131,28 @@ describe Room do
       it { is_expected.to eq [chat2, chat3] }
     end
   end
+
+  describe "#online_users" do
+    subject { room.online_users }
+
+    let(:user1) { build(:user1) }
+    let(:user2) { build(:user2) }
+    let(:user3) { build(:user3) }
+    let(:log1) { build(:user_room_log, user: user1, room: room, entry_at: Time.now.utc - margin, exit_at: nil) }
+    let(:log2) { build(:user_room_log, user: user2, room: room, entry_at: Time.now.utc - margin, exit_at: nil) }
+    let(:log3) { build(:user_room_log, user: user3, room: room, entry_at: Time.now.utc - margin, exit_at: Time.now.utc - margin) }
+
+    context "when room do not have online users" do
+      it { is_expected.to eq [] }
+    end
+
+    context "when room have some users" do
+      before {
+        log1.save!
+        log2.save!
+        log3.save!
+      }
+      it { is_expected.to eq [user1, user2] }
+    end
+  end
 end
