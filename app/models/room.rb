@@ -49,7 +49,7 @@ class Room < ApplicationRecord
   end
 
   def online_users
-    user_room_logs.where(exit_at: nil).map(&:user).uniq
+    User.where(id: user_room_logs.where(exit_at: nil).select(:user_id).distinct)
   end
 
   private
