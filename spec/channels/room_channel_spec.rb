@@ -64,6 +64,17 @@ describe RoomChannel, type: :channel do
                               expect(data).to be_json_eql(%("past_chats")).at_path("data_type")
                             }
     end
+
+    context "when room have a chat" do
+      let(:chat) { build(:user_chat, room: room, user: user) }
+      before { chat.save! }
+      it "expect to have broadcast with chat" do
+        expect { subject }.to have_broadcasted_to(target).with { |data|
+                                expect(data).to be_json_eql(%("#{chat.message}")).at_path("data/past_chats/0/message")
+                                expect(data).to be_json_eql(user.id).at_path("data/past_chats/0/user/id")
+                              }
+      end
+    end
   end
 
   describe "perform :add_video" do
