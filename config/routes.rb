@@ -11,4 +11,5 @@ Rails.application.routes.draw do
   end
 
   root to: "top#show"
+  mount ActionCable.server => "/cable"
 end
