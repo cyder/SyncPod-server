@@ -193,7 +193,7 @@ GEM
     rb-fsevent (0.10.2)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
-    redis (3.3.5)
+    redis (3.2.0)
     ref (2.0.0)
     representable (3.0.4)
       declarative (< 0.1.0)
