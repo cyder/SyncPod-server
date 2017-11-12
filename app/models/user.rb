@@ -16,11 +16,10 @@ class User < ApplicationRecord
     save
   end
 
-  def joined_room num
+  def joined_room
     logs = user_room_logs.select("room_id, MAX(entry_at) AS entry_at")
                          .group(:room_id)
                          .order("entry_at DESC")
-                         .limit(num)
     logs.map {|log| log.room }
   end
 end
