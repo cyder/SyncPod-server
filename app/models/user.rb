@@ -17,9 +17,9 @@ class User < ApplicationRecord
   end
 
   def joined_room
-    logs = user_room_logs.select("room_id, MAX(entry_at) AS entry_at")
-                         .group(:room_id)
-                         .order("entry_at DESC")
-    logs.map {|log| log.room }
+    Room.joins(:user_room_logs).
+      where(["user_room_logs.user_id = ?", self.id]).
+      group("user_room_logs.room_id").
+      order("MAX(user_room_logs.entry_at) DESC").to_sql
   end
 end
