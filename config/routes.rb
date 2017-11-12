@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       resource :login, only: [:create], controller: :session
       resource :users, only: [:create]
       resources :rooms, only: [:index, :create, :show]
+      get "joined_room", to: "user#joined_room"
     end
   end
 
