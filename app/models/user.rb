@@ -20,6 +20,6 @@ class User < ApplicationRecord
     Room.joins(:user_room_logs).
       where(["user_room_logs.user_id = ?", self.id]).
       group("user_room_logs.room_id").
-      order("MAX(user_room_logs.entry_at) DESC").to_sql
+      order("MAX(user_room_logs.entry_at) DESC")
   end
 end
