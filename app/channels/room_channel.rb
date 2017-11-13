@@ -1,23 +1,19 @@
 class RoomChannel < ApplicationCable::Channel
   def subscribed
     @room = Room.find_by(key: params[:room_key])
-    if @room.present?
-      stream_for current_user
-      stream_from "room_#{@room.id}"
-      message = current_user.name + "さんが入室しました。"
-      Chat.create! room: @room, chat_type: "login", message: message
-      UserRoomLog.create! user: current_user, room: @room, entry_at: Time.now.utc
-    else
-      reject
-    end
+    return reject if @room.blank?
+    stream_for current_user
+    stream_from "room_#{@room.id}"
+    message = current_user.name + "さんが入室しました。"
+    Chat.create! room: @room, chat_type: "login", message: message
+    UserRoomLog.create! user: current_user, room: @room, entry_at: Time.now.utc
   end
 
   def unsubscribed
-    if @room.present?
-      message = current_user.name + "さんが退室しました。"
-      Chat.create! room: @room, chat_type: "logout", message: message
-      UserRoomLog.find_by!(user: current_user, room: @room, exit_at: nil).update(exit_at: Time.now.utc)
-    end
+    return if @room.blank?
+    message = current_user.name + "さんが退室しました。"
+    Chat.create! room: @room, chat_type: "logout", message: message
+    UserRoomLog.find_by!(user: current_user, room: @room, exit_at: nil).update(exit_at: Time.now.utc)
   end
 
   def now_playing_video
