@@ -16,7 +16,7 @@ class User < ApplicationRecord
     save
   end
 
-  def joined_room
+  def joined_rooms
     Room.joins(:user_room_logs).
       where(["user_room_logs.user_id = ?", self.id]).
       group("user_room_logs.room_id").

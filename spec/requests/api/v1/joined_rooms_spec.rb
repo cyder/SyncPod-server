@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "joined_room" do
+describe "joined_rooms" do
   let(:user) { create(:user) }
   let(:headers) { { "Authorization" => user.access_token } }
   let(:room) { create(:room) }
@@ -8,7 +8,7 @@ describe "joined_room" do
   let(:entry_at) { Time.now.utc - margin }
   let(:user_room_log) { build(:user_room_log, user: user, room: room, entry_at: entry_at) }
 
-  describe "GET /api/v1/joined_room" do
+  describe "GET /api/v1/joined_rooms" do
     before { user_room_log.save }
     context "with valid params" do
       it "returns a room", :autodoc do
