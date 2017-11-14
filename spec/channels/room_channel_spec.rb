@@ -23,6 +23,15 @@ describe RoomChannel, type: :channel do
       it { expect { subject }.to change(UserRoomLog, :count).by(1) }
       it { expect { subject }.to change { room.online_users.count }.by(1) }
     end
+
+    context "with invalid params" do
+      subject { subscribe room_key: "invalid_key" }
+
+      it "not subscribes to a stream" do
+        subject
+        expect(subscription).to be_rejected
+      end
+    end
   end
 
   describe "perform :unsubscribed" do
