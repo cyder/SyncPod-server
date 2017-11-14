@@ -14,7 +14,7 @@ describe "joined_rooms" do
       it "returns a room", :autodoc do
         is_expected.to eq 200
         body = response.body
-        expect(body).to be_json_eql(room.id).at_path("0/id")
+        expect(body).to be_json_eql(room.id).at_path("joined_rooms/0/id")
       end
     end
 
