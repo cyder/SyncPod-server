@@ -3,8 +3,8 @@ class Api::V1::UserController < ApplicationController
 
   DEFAULT_NUM = 10
 
-  def joined_room
+  def joined_rooms
     num = params[:num] || DEFAULT_NUM
-    @rooms = current_user.joined_room.limit(num)
+    @rooms = current_user.joined_rooms.limit(num)
   end
 end
