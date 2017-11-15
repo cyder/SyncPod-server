@@ -6,6 +6,7 @@ class RoomChannel < ApplicationCable::Channel
     stream_from "room_#{@room.id}"
     message = current_user.name + "さんが入室しました。"
     Chat.create! room: @room, chat_type: "login", message: message
+    exit_room
     UserRoomLog.create! user: current_user, room: @room, entry_at: Time.now.utc
   end
 
@@ -13,7 +14,7 @@ class RoomChannel < ApplicationCable::Channel
     return if @room.blank?
     message = current_user.name + "さんが退室しました。"
     Chat.create! room: @room, chat_type: "logout", message: message
-    UserRoomLog.find_by!(user: current_user, room: @room, exit_at: nil).update(exit_at: Time.now.utc)
+    exit_room
   end
 
   def now_playing_video
@@ -70,5 +71,9 @@ class RoomChannel < ApplicationCable::Channel
                                             formats: "json",
                                             handlers: "jbuilder",
                                             locals: { chats: room.past_chats(10) })
+    end
+
+    def exit_room
+      UserRoomLog.where(user: current_user, room: @room, exit_at: nil).update(exit_at: Time.now.utc)
     end
 end
