@@ -18,6 +18,7 @@ class YoutubeSearch
       type: "video",
       page_token: page_token,
       max_results: 10,
+      video_syndicated: true,
     }
 
     results = service.list_searches("id", opt)
