@@ -11,15 +11,15 @@ class Room < ApplicationRecord
   def add_video(youtube_video_id, user)
     video_start_time = calc_video_start_time
 
-    youtube = Youtube.new(youtube_video_id)
+    youtube_video = YoutubeVideo.new(youtube_video_id)
 
     Video.create!(
       room: self,
-      duration: youtube.time.text,
+      duration: youtube_video.time.text,
       video_start_time: video_start_time,
-      video_end_time: youtube.time.video_end_time(video_start_time),
+      video_end_time: youtube_video.time.video_end_time(video_start_time),
       add_user: user,
-      **youtube.to_h.except(:time),
+      **youtube_video.to_h.except(:time),
     )
   end
 
