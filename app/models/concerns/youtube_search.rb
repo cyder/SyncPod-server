@@ -1,8 +1,6 @@
 require "google/apis/youtube_v3"
 
 class YoutubeSearch
-  include AttrAccessorExtension
-
   attr_reader :items,
               :next_page_token,
               :prev_page_token,
