@@ -8,6 +8,8 @@ Rails.application.routes.draw do
       resource :users, only: [:create]
       resources :rooms, only: [:index, :create, :show]
       get "joined_rooms", to: "user#joined_rooms"
+      get "youtube/search", to: "youtube#search"
+      get "youtube/video", to: "youtube#video"
     end
   end
 
