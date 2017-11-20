@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   after_create :update_access_token!
 
+  mount_uploader :icon, UserIconUploader
+
   has_many :videos, dependent: :destroy
   has_many :chats, dependent: :destroy
   has_many :user_room_logs, dependent: :destroy
