@@ -1,6 +1,6 @@
 require "google/apis/youtube_v3"
 
-class Youtube
+class YoutubeVideo
   include AttrAccessorExtension
 
   attr_reader :youtube_video_id,

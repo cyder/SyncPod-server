@@ -1,10 +1,10 @@
 require "rails_helper"
 require "google/apis/youtube_v3"
 
-describe Youtube do
+describe YoutubeVideo do
   describe "#initialize" do
     let(:youtube_video_id) { "XVId6EOnKq4" }
-    let(:youtube) { Youtube.new(youtube_video_id) }
+    let(:youtube) { YoutubeVideo.new(youtube_video_id) }
 
     let(:channel_title) { "ポルカドットスティングレイ" }
     let(:published) { DateTime.parse("Wed, 01 Nov 2017 02:59:48 +0000").utc }
