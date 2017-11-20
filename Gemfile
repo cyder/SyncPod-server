@@ -33,9 +33,12 @@ gem "redis", "~> 3.0"
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem "carrierwave"
 gem "config"
 gem "devise"
+gem "fog"
 gem "google-api-client", "~> 0.11"
+gem "mini_magick"
 gem "tod"
 
 group :development, :test do
