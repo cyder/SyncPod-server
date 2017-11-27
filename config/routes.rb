@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resource :login, only: [:create], controller: :session
       resource :users, only: [:create]
+      post "users/upload_icon", to: "users#upload_icon"
       resources :rooms, only: [:index, :create, :show]
       get "joined_rooms", to: "user#joined_rooms"
       get "youtube/search", to: "youtube#search"
