@@ -19,6 +19,7 @@ db/*.sqlite3
 /db/*.javadb/
 /db/*.sqlite3
 /doc/*
+/public/uploads/tmp/
 /public/cache
 /public/stylesheets/compiled
 /public/system/*
