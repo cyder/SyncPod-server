@@ -39,6 +39,7 @@ gem "devise"
 gem "fog"
 gem "google-api-client", "~> 0.11"
 gem "mini_magick"
+gem "parallel"
 gem "tod"
 
 group :development, :test do
