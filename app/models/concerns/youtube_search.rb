@@ -20,7 +20,9 @@ class YoutubeSearch
     }
 
     results = service.list_searches("id", opt)
-    @items = results.items.map { |item| YoutubeVideo.new item.id.video_id }
+    @items = Parallel.map(results.items, in_threads: results.items.size) do |one_letter|
+      YoutubeVideo.new one_letter.id.video_id
+    end
     @next_page_token = results.next_page_token
     @prev_page_token = results.prev_page_token
     @total_results = results.page_info.total_results

@@ -510,6 +510,7 @@ DEPENDENCIES
   mini_magick
   mysql2 (>= 0.3.18, < 0.5)
   onkcop
+  parallel
   puma (~> 3.7)
   rails (~> 5.1.2)
   redis (~> 3.0)
