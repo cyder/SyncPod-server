@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resource :login, only: [:create], controller: :session
-      resource :users, only: [:create]
+      resource :users, only: [:create, :update]
       resources :rooms, only: [:index, :create, :show]
       get "joined_rooms", to: "user#joined_rooms"
       get "youtube/search", to: "youtube#search"
