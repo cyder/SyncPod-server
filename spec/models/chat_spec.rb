@@ -1,9 +1,18 @@
 require "rails_helper"
 
 describe Chat do
-  it "is valid with correct param" do
-    chat = build(:user_chat)
-    expect(chat).to be_valid
+  context "with correct param" do
+    it "is valid" do
+      chat = create(:user_chat)
+      expect(chat).to be_valid
+    end
+  end
+
+  context "with emoji" do
+    it "is valid" do
+      chat = create(:user_chat_with_emoji)
+      expect(chat).to be_valid
+    end
   end
 
   describe "after_create_commit" do
