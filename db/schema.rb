@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 20171120013607) do
 
-  create_table "chats", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "chats", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.bigint "room_id", null: false
     t.string "chat_type", null: false
     t.text "message", null: false
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20171120013607) do
     t.index ["user_id"], name: "index_chats_on_user_id"
   end
 
-  create_table "rooms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "rooms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string "name", null: false
     t.string "key", null: false
     t.text "description"
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20171120013607) do
     t.index ["key"], name: "index_rooms_on_key"
   end
 
-  create_table "user_room_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "user_room_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.bigint "user_id"
     t.bigint "room_id"
     t.datetime "entry_at", null: false
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 20171120013607) do
     t.index ["user_id"], name: "index_user_room_logs_on_user_id"
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name", default: "", null: false
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 20171120013607) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  create_table "videos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "videos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.bigint "room_id", null: false
     t.string "youtube_video_id", null: false
     t.string "title"
