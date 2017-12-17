@@ -108,6 +108,10 @@ GEM
     docile (1.1.5)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
+    dotenv (2.2.1)
+    dotenv-rails (2.2.1)
+      dotenv (= 2.2.1)
+      railties (>= 3.2, < 5.2)
     erubi (1.6.1)
     excon (0.59.0)
     execjs (2.7.0)
@@ -532,6 +536,7 @@ DEPENDENCIES
   config
   database_rewinder
   devise
+  dotenv-rails
   factory_bot_rails
   fog
   google-api-client (~> 0.11)
