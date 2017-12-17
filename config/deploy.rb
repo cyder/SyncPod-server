@@ -6,6 +6,8 @@ set :repo_url, "git@github.com:Mori-Atsushi/YouTubeSyncServer.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+# TODO: あとでmasterに戻す
+set :branch, "setup-capistrano"
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, "/var/www/syncpod"
@@ -38,9 +40,14 @@ set :keep_releases, 5
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
 
-set :rbenv_ruby, "2.4.1"
+set :rbenv_ruby, "2.4.2"
+set :rbenv_path, "/usr/local/rbenv"
 
 set :log_level, :debug
+
+set :env_file, ".env"
+
+set :slack_url, ENV["SLACK_URL"]
 
 namespace :deploy do
   desc "Restart application"
@@ -74,6 +81,21 @@ namespace :deploy do
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
+    end
+  end
+
+  task :cleanup do
+    on roles(:app) do
+      execute <<-COMMAND
+        curl -X POST --data-urlencode \
+          \"payload={ \
+            \\\"channel\\\": \\\"#syncpod-server\\\", \
+            \\\"username\\\": \\\"deploy\\\", \
+            \\\"text\\\": \\\"#{fetch(:rails_env)}環境へ#{fetch(:branch)}をデプロイした.\\\", \
+            \\\"icon_emoji\\\": \\\":aho:\\\"\
+          }\" \
+        #{fetch(:slack_url)}
+      COMMAND
     end
   end
 end

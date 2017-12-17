@@ -36,12 +36,12 @@ gem "redis", "~> 3.0"
 gem "carrierwave"
 gem "config"
 gem "devise"
+gem "dotenv-rails"
 gem "fog"
 gem "google-api-client", "~> 0.11"
 gem "mini_magick"
 gem "parallel"
 gem "tod"
-gem "dotenv-rails"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and

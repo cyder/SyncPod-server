@@ -14,7 +14,7 @@ class YoutubeVideo
 
   def initialize(id)
     service = Google::Apis::YoutubeV3::YouTubeService.new
-    service.key = Settings.google.api_key
+    service.key = ENV["GOOGLE_API_KEY"]
     result = service.list_videos("snippet, contentDetails, statistics", { id: id }).items[0]
 
     @youtube_video_id = id

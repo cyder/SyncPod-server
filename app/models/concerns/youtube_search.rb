@@ -9,7 +9,7 @@ class YoutubeSearch
 
   def initialize(keyword, page_token = nil)
     service = Google::Apis::YoutubeV3::YouTubeService.new
-    service.key = Settings.google.api_key
+    service.key = ENV["GOOGLE_API_KEY"]
 
     opt = {
       q: keyword,
