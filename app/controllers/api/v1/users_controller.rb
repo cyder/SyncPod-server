@@ -17,7 +17,7 @@ class Api::V1::UsersController < ApplicationController
 
   def update
     @user = current_user
-    unless @user.update_attributes(user_params)
+    unless @user.update(user_params)
       render json: { error: t("user_create_error") }, status: 400
     end
   end
