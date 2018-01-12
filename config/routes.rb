@@ -5,8 +5,11 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resource :login, only: [:create], controller: :session
-      resource :users, only: [:create]
-      post "users/upload_icon", to: "users#upload_icon"
+      resource :users, only: [:create] do
+        collection do
+          post :upload_icon
+        end
+      end
       resources :rooms, only: [:index, :create, :show]
       get "joined_rooms", to: "user#joined_rooms"
       get "youtube/search", to: "youtube#search"
