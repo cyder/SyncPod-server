@@ -23,6 +23,12 @@ pid $pid
 # ホットデプロイをするかしないかを設定
 preload_app true
 
+# ホットデプロイを行うとGemと環境変数のloadをしてくれないので明示的にloadする
+before_exec do |_server|
+  Bundler.require
+  Dotenv.overload
+end
+
 # fork前に行うことを定義。後述
 before_fork do |server, _worker|
   defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
