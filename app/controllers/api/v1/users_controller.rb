@@ -15,6 +15,14 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  # 最近参加したルームを返す
+  def joined_rooms
+    default_num = 10
+
+    num = params[:num] || default_num
+    @rooms = current_user.joined_rooms.limit(num)
+  end
+
   private
 
     def user_params
