@@ -113,7 +113,7 @@ describe RoomChannel, type: :channel do
 
     before { subscribe room_key: room.key }
 
-    it "subscribes to a stream" do
+    it "expect to have broadcast with error" do
       expect { subject }.to have_broadcasted_to(another_target).with { |data|
                               expect(data).to be_json_eql(%("error")).at_path("data_type")
                               expect(data).to be_json_eql(%("force exit")).at_path("data/message")
