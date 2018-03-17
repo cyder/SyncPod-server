@@ -104,4 +104,19 @@ describe RoomChannel, type: :channel do
     before { subscribe room_key: room.key }
     it { expect { subject }.to change(Chat, :count).by(1) }
   end
+
+  describe "perform :force_exit" do
+    let(:another_user) { create(:user1) }
+    let(:another_target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, another_user]) }
+
+    subject { perform :force_exit, user_id: another_user.id }
+    before { subscribe room_key: room.key }
+
+    it "subscribes to a stream" do
+      expect { subject }.to have_broadcasted_to(another_target).with { |data|
+                                expect(data).to be_json_eql(%("error")).at_path("data_type")
+                                expect(data).to be_json_eql(%("force exit")).at_path("data/message")
+                              }
+    end
+  end
 end
