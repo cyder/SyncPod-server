@@ -119,5 +119,6 @@ describe RoomChannel, type: :channel do
                               expect(data).to be_json_eql(%("force exit")).at_path("data/message")
                             }
     end
+    it { expect { subject }.to change(BannedUser, :count).by(1) }
   end
 end
