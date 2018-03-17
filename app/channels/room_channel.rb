@@ -1,14 +1,13 @@
 class RoomChannel < ApplicationCable::Channel
   def subscribed
     @room = Room.find_by(key: params[:room_key])
-    return reject if @room.blank?
-    return reject if @room.banned_users.where(target_user: current_user).valid.exists?
+    return reject unless can_subscribe @room, current_user
     stream_for current_user
     stream_from "room_#{@room.id}"
-    message = current_user.name + "さんが入室しました。"
     ActiveRecord::Base.transaction do
-      Chat.create! room: @room, chat_type: "login", message: message
       exit_room
+      message = current_user.name + "さんが入室しました。"
+      Chat.create! room: @room, chat_type: "login", message: message
       UserRoomLog.create! user: current_user, room: @room, entry_at: Time.now.utc
     end
   end
@@ -66,6 +65,10 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   private
+
+    def can_subscribe(room, user)
+      room.present? and room.banned_users.where(target_user: current_user).valid.blank?
+    end
 
     def render_now_playing_video_json(room)
       ApplicationController.renderer.render("jbuilder/now_playing_video",
