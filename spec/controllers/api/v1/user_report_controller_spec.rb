@@ -10,18 +10,18 @@ describe Api::V1::UserReportController do
 
     context "with valid params" do
       before { request.headers["Authorization"] = user.access_token }
-      it { expect { subject }.to change(UserReport, :count).by(1) }
+      it { expect { subject }.to change { UserReport.count }.by(1) }
     end
 
     context "with invalid message" do
       let(:message) { nil }
       before { request.headers["Authorization"] = user.access_token }
-      it { expect { subject }.to change(UserReport, :count).by(0) }
+      it { expect { subject }.to change { UserReport.count }.by(0) }
     end
 
     context "without access token" do
       let(:params) { { room: { name: "test", description: "test" } } }
-      it { expect { subject }.to change(UserReport, :count).by(0) }
+      it { expect { subject }.to change { UserReport.count }.by(0) }
     end
   end
 end

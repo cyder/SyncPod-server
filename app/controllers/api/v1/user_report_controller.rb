@@ -13,8 +13,9 @@ class Api::V1::UserReportController < ApplicationController
 
   private
 
-    def send_slack_message user_report
+    def send_slack_message(user_report)
       return unless Rails.env.production?
+
       slack_message = "*from: #{user_report.user.name} <<mailto:#{user_report.user.email}|#{user_report.user.email}>>*\n#{user_report.message}"
       notifier = Slack::Notifier.new ENV["USER_REPORT_SLACK_WEBHOOK_URL"]
       notifier.ping(Slack::Notifier::Util::LinkFormatter.format(slack_message))
