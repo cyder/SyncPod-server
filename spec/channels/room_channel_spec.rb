@@ -8,9 +8,9 @@ describe RoomChannel, type: :channel do
   before { stub_connection current_user: user }
 
   describe "subscribes to a stream" do
-    context "with correct params" do
-      subject { subscribe room_key: room.key }
+    subject { subscribe room_key: room.key }
 
+    context "with correct params" do
       it "subscribes to a stream" do
         subject
         expect(subscription).to be_confirmed
@@ -30,6 +30,28 @@ describe RoomChannel, type: :channel do
       it "not subscribes to a stream" do
         subject
         expect(subscription).to be_rejected
+      end
+    end
+
+    describe "when user is banned" do
+      before { create(:banned_user, target_user: user, room: room, expiration_at: expiration_at) }
+
+      context "expiration_at > now" do
+        let(:expiration_at) { Time.now.utc + 60 * 60 * 24 }
+
+        it "not subscribes to a stream" do
+          subject
+          expect(subscription).to be_rejected
+        end
+      end
+
+      context "expiration_at < now" do
+        let(:expiration_at) { Time.now.utc - 60 * 60 * 24 }
+
+        it "subscribes to a stream" do
+          subject
+          expect(subscription).to be_confirmed
+        end
       end
     end
   end
