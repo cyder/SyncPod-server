@@ -47,6 +47,12 @@ class RoomChannel < ApplicationCable::Channel
     MessageReservationJob.set(wait_until: video.video_start_time).perform_later("start_video", start_message, video.room)
   end
 
+  def force_exit(data)
+    target_user = User.find(data["user_id"])
+    RoomChannel.broadcast_to target_user,
+                             render_error_json("force exit")
+  end
+
   def message(data)
     Chat.create! room: @room,
                  chat_type: "user",
@@ -75,6 +81,13 @@ class RoomChannel < ApplicationCable::Channel
                                             formats: "json",
                                             handlers: "jbuilder",
                                             locals: { chats: room.past_chats(10) })
+    end
+
+    def render_error_json(message)
+      ApplicationController.renderer.render("jbuilder/error",
+                                            formats: "json",
+                                            handlers: "jbuilder",
+                                            locals: { message: message })
     end
 
     def exit_room
