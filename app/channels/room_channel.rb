@@ -47,7 +47,7 @@ class RoomChannel < ApplicationCable::Channel
     MessageReservationJob.set(wait_until: video.video_start_time).perform_later("start_video", start_message, video.room)
   end
 
-  def force_exit(data)
+  def exit_force(data)
     target_user = User.find(data["user_id"])
     RoomChannel.broadcast_to target_user,
                              render_error_json("force exit")

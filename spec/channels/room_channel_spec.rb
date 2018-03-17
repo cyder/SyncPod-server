@@ -127,8 +127,8 @@ describe RoomChannel, type: :channel do
     it { expect { subject }.to change(Chat, :count).by(1) }
   end
 
-  describe "perform :force_exit" do
-    subject { perform :force_exit, user_id: another_user.id }
+  describe "perform :exit_force" do
+    subject { perform :exit_force, user_id: another_user.id }
 
     let(:another_user) { create(:user1) }
     let(:another_target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, another_user]) }
