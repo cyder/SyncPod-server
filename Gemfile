@@ -41,6 +41,7 @@ gem "google-api-client", "~> 0.11"
 gem "mini_magick"
 gem "parallel"
 gem "tod"
+gem 'slack-notifier'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and
