@@ -2,6 +2,7 @@ class RoomChannel < ApplicationCable::Channel
   def subscribed
     @room = Room.find_by(key: params[:room_key])
     return reject if @room.blank?
+    return reject if @room.banned_users.where(target_user: current_user).valid.exists?
     stream_for current_user
     stream_from "room_#{@room.id}"
     message = current_user.name + "さんが入室しました。"
