@@ -34,7 +34,7 @@ describe RoomChannel, type: :channel do
     end
 
     describe "when user is banned" do
-      before { create(:ban_report, target_user: user, room: room, expiration_at: expiration_at) }
+      before { create(:ban_report, target: user, room: room, expiration_at: expiration_at) }
 
       context "expiration_at > now" do
         let(:expiration_at) { Time.now.utc + 60 * 60 * 24 }

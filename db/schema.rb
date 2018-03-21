@@ -13,15 +13,15 @@
 ActiveRecord::Schema.define(version: 20180317055145) do
 
   create_table "ban_reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
-    t.bigint "target_user_id"
-    t.bigint "report_user_id"
+    t.bigint "target_id"
+    t.bigint "reporter_id"
     t.bigint "room_id"
     t.datetime "expiration_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["report_user_id"], name: "index_ban_reports_on_report_user_id"
+    t.index ["reporter_id"], name: "index_ban_reports_on_reporter_id"
     t.index ["room_id"], name: "index_ban_reports_on_room_id"
-    t.index ["target_user_id"], name: "index_ban_reports_on_target_user_id"
+    t.index ["target_id"], name: "index_ban_reports_on_target_id"
   end
 
   create_table "chats", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|

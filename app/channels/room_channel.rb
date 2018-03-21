@@ -48,11 +48,11 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def exit_force(data)
-    target_user = User.find(data["user_id"])
-    RoomChannel.broadcast_to target_user,
+    target = User.find(data["user_id"])
+    RoomChannel.broadcast_to target,
                              render_error_json("force exit")
-    BanReport.create! target_user: target_user,
-                       report_user: current_user,
+    BanReport.create! target: target,
+                       reporter: current_user,
                        room: @room,
                        expiration_at: Time.now.utc + 60 * 60 * 24
   end
@@ -67,7 +67,7 @@ class RoomChannel < ApplicationCable::Channel
   private
 
     def can_subscribe(room, user)
-      room.present? and room.ban_reports.where(target_user: current_user).valid.blank?
+      room.present? and room.ban_reports.where(target: current_user).valid.blank?
     end
 
     def render_now_playing_video_json(room)
