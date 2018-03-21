@@ -52,9 +52,9 @@ class RoomChannel < ApplicationCable::Channel
     RoomChannel.broadcast_to target,
                              render_error_json("force exit")
     BanReport.create! target: target,
-                       reporter: current_user,
-                       room: @room,
-                       expiration_at: Time.now.utc + 60 * 60 * 24
+                      reporter: current_user,
+                      room: @room,
+                      expiration_at: Time.now.utc + 60 * 60 * 24
   end
 
   def message(data)
