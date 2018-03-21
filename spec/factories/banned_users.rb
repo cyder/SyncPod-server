@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :banned_user do
+  factory :ban_report do
     target_user { FactoryBot.create(:user1) }
     report_user { FactoryBot.create(:user2) }
     room

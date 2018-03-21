@@ -34,7 +34,7 @@ describe RoomChannel, type: :channel do
     end
 
     describe "when user is banned" do
-      before { create(:banned_user, target_user: user, room: room, expiration_at: expiration_at) }
+      before { create(:ban_report, target_user: user, room: room, expiration_at: expiration_at) }
 
       context "expiration_at > now" do
         let(:expiration_at) { Time.now.utc + 60 * 60 * 24 }
@@ -141,6 +141,6 @@ describe RoomChannel, type: :channel do
                               expect(data).to be_json_eql(%("force exit")).at_path("data/message")
                             }
     end
-    it { expect { subject }.to change(BannedUser, :count).by(1) }
+    it { expect { subject }.to change(BanReport, :count).by(1) }
   end
 end

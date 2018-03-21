@@ -1,4 +1,4 @@
-class BannedUser < ApplicationRecord
+class BanReport < ApplicationRecord
   belongs_to :target_user, class_name: "User"
   belongs_to :report_user, class_name: "User"
   belongs_to :room

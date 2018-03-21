@@ -51,7 +51,7 @@ class RoomChannel < ApplicationCable::Channel
     target_user = User.find(data["user_id"])
     RoomChannel.broadcast_to target_user,
                              render_error_json("force exit")
-    BannedUser.create! target_user: target_user,
+    BanReport.create! target_user: target_user,
                        report_user: current_user,
                        room: @room,
                        expiration_at: Time.now.utc + 60 * 60 * 24
@@ -67,7 +67,7 @@ class RoomChannel < ApplicationCable::Channel
   private
 
     def can_subscribe(room, user)
-      room.present? and room.banned_users.where(target_user: current_user).valid.blank?
+      room.present? and room.ban_reports.where(target_user: current_user).valid.blank?
     end
 
     def render_now_playing_video_json(room)
