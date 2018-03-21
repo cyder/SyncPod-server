@@ -1,7 +1,7 @@
 class RoomChannel < ApplicationCable::Channel
   def subscribed
     @room = Room.find_by(key: params[:room_key])
-    return reject unless can_subscribe @room, current_user
+    return reject if @room.blank? || @room.banned?(current_user)
     stream_for current_user
     stream_from "room_#{@room.id}"
     ActiveRecord::Base.transaction do
@@ -65,10 +65,6 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   private
-
-    def can_subscribe(room, user)
-      room.present? and room.ban_reports.where(target: current_user).valid.blank?
-    end
 
     def render_now_playing_video_json(room)
       ApplicationController.renderer.render("jbuilder/now_playing_video",

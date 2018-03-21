@@ -53,6 +53,10 @@ class Room < ApplicationRecord
     User.where(id: user_room_logs.where(exit_at: nil).select(:user_id).distinct)
   end
 
+  def banned?(user)
+    ban_reports.where(target: user).valid.present?
+  end
+
   private
 
     def set_room_key
