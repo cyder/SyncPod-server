@@ -13,11 +13,22 @@ describe Room do
     subject { room.add_video youtube_video_id, user }
 
     let(:user) { build(:user) }
-    let(:youtube_video_id) { "XVId6EOnKq4" }
-    it "create video" do
-      expect { subject }.to change { Video.count }.by(1)
+
+    context "with valid params" do
+      let(:youtube_video_id) { "XVId6EOnKq4" }
+      it "create video" do
+        expect { subject }.to change { Video.count }.by(1)
+      end
+      it { expect(subject.youtube_video_id).to eq youtube_video_id }
     end
-    it { expect(subject.youtube_video_id).to eq youtube_video_id }
+
+    context "with emoji" do
+      let(:youtube_video_id) { "NasyGUeNMTs" }
+      it "create video" do
+        expect { subject }.to change { Video.count }.by(1)
+      end
+      it { expect(subject.youtube_video_id).to eq youtube_video_id }
+    end
   end
 
   describe "#calc_video_start_time" do
