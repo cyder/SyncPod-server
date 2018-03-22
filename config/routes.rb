@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       get "joined_rooms", to: "users#joined_rooms"
       get "youtube/search", to: "youtube#search"
       get "youtube/video", to: "youtube#video"
+      post "user_report", to: "user_report#create"
     end
   end
 
