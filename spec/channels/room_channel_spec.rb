@@ -2,57 +2,61 @@ require "rails_helper"
 
 describe RoomChannel, type: :channel do
   let(:room) { create(:room) }
+  let(:room_key) { room.key }
   let(:user) { create(:user) }
   let(:target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, user]) }
   let(:stream_from) { "room_" + room.id.to_s }
   before { stub_connection current_user: user }
 
-  describe "subscribes to a stream" do
-    subject { subscribe room_key: room.key }
+  describe "subscribes to a stream (subscription and streams)" do
+    before { subscribe room_key: room_key }
 
     context "with correct params" do
-      it "subscribes to a stream" do
-        subject
-        expect(subscription).to be_confirmed
+      it { expect(subscription).to be_confirmed }
+      it { expect(streams).to include(stream_from) }
+    end
+
+    context "with invalid params" do
+      let(:room_key) { "invalid_key" }
+
+      it { expect(subscription).to be_rejected }
+    end
+
+    describe "when user is banned" do
+      before do
+        create(:ban_report, target: user, room: room, expiration_at: expiration_at)
+        subscribe room_key: room_key
       end
-      it "includes room id" do
-        subject
-        expect(streams).to include(stream_from)
+
+      context "expiration_at > now" do
+        let(:expiration_at) { Time.now.utc + 60 * 60 * 24 }
+
+        it { expect(subscription).to be_rejected }
       end
+
+      context "expiration_at < now" do
+        let(:expiration_at) { Time.now.utc - 60 * 60 * 24 }
+
+        it { expect(subscription).to be_confirmed }
+      end
+    end
+  end
+
+  describe "subscribes to a stream (model)" do
+    subject { subscribe room_key: room_key }
+
+    context "with correct params" do
       it { expect { subject }.to change(Chat, :count).by(1) }
       it { expect { subject }.to change(UserRoomLog, :count).by(1) }
       it { expect { subject }.to change { room.online_users.count }.by(1) }
     end
 
     context "with invalid params" do
-      subject { subscribe room_key: "invalid_key" }
+      let(:room_key) { "invalid_key" }
 
-      it "not subscribes to a stream" do
-        subject
-        expect(subscription).to be_rejected
-      end
-    end
-
-    describe "when user is banned" do
-      before { create(:ban_report, target: user, room: room, expiration_at: expiration_at) }
-
-      context "expiration_at > now" do
-        let(:expiration_at) { Time.now.utc + 60 * 60 * 24 }
-
-        it "not subscribes to a stream" do
-          subject
-          expect(subscription).to be_rejected
-        end
-      end
-
-      context "expiration_at < now" do
-        let(:expiration_at) { Time.now.utc - 60 * 60 * 24 }
-
-        it "subscribes to a stream" do
-          subject
-          expect(subscription).to be_confirmed
-        end
-      end
+      it { expect { subject }.to change(Chat, :count).by(0) }
+      it { expect { subject }.to change(UserRoomLog, :count).by(0) }
+      it { expect { subject }.to change { room.online_users.count }.by(0) }
     end
   end
 
