@@ -54,7 +54,7 @@ class Room < ApplicationRecord
   end
 
   def banned?(user)
-    ban_reports.where(target: user).valid.present?
+    ban_reports.where(target: user).effective.present?
   end
 
   private
