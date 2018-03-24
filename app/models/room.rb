@@ -2,6 +2,7 @@ class Room < ApplicationRecord
   has_many :videos, dependent: :destroy
   has_many :chats, dependent: :destroy
   has_many :user_room_logs, dependent: :destroy
+  has_many :ban_reports, dependent: :destroy
   validates :key, uniqueness: true
   validates :name, presence: true
   validates :description, presence: true
@@ -50,6 +51,10 @@ class Room < ApplicationRecord
 
   def online_users
     User.where(id: user_room_logs.where(exit_at: nil).select(:user_id).distinct)
+  end
+
+  def banned?(user)
+    ban_reports.where(target: user).effective.present?
   end
 
   private

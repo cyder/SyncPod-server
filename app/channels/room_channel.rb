@@ -1,13 +1,13 @@
 class RoomChannel < ApplicationCable::Channel
   def subscribed
     @room = Room.find_by(key: params[:room_key])
-    return reject if @room.blank?
+    return reject if @room.blank? || @room.banned?(current_user)
     stream_for current_user
     stream_from "room_#{@room.id}"
-    message = current_user.name + "さんが入室しました。"
     ActiveRecord::Base.transaction do
-      Chat.create! room: @room, chat_type: "login", message: message
       exit_room
+      message = current_user.name + "さんが入室しました。"
+      Chat.create! room: @room, chat_type: "login", message: message
       UserRoomLog.create! user: current_user, room: @room, entry_at: Time.now.utc
     end
   end
@@ -47,6 +47,16 @@ class RoomChannel < ApplicationCable::Channel
     MessageReservationJob.set(wait_until: video.video_start_time).perform_later("start_video", start_message, video.room)
   end
 
+  def exit_force(data)
+    target = User.find(data["user_id"])
+    RoomChannel.broadcast_to target,
+                             render_error_json("force exit")
+    BanReport.create! target: target,
+                      reporter: current_user,
+                      room: @room,
+                      expiration_at: Time.now.utc + 60 * 60 * 24
+  end
+
   def message(data)
     Chat.create! room: @room,
                  chat_type: "user",
@@ -75,6 +85,13 @@ class RoomChannel < ApplicationCable::Channel
                                             formats: "json",
                                             handlers: "jbuilder",
                                             locals: { chats: room.past_chats(10) })
+    end
+
+    def render_error_json(message)
+      ApplicationController.renderer.render("jbuilder/error",
+                                            formats: "json",
+                                            handlers: "jbuilder",
+                                            locals: { message: message })
     end
 
     def exit_room
