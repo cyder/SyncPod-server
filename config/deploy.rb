@@ -66,17 +66,6 @@ namespace :deploy do
     end
   end
 
-  desc "Run seed"
-  task :seed_fu do
-    on roles(:app) do
-      with rails_env: fetch(:rails_env) do
-        within current_path do
-          execute :bundle, :exec, :rake, "db:seed_fu"
-        end
-      end
-    end
-  end
-
   after :publishing, :restart
 
   after :restart, :clear_cache do
