@@ -34,6 +34,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include JsonSpec::Helpers
   config.include RSpec::RequestDescriber, type: :request
+  config.include ActionDispatch::TestProcess
 
   config.before :all do
     FactoryBot.reload
@@ -50,7 +51,7 @@ RSpec.configure do |config|
   Autodoc.configuration.toc = true
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  # config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

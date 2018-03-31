@@ -15,6 +15,13 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def upload_icon
+    @user = current_user
+    unless @user.update(icon: params[:icon])
+      render json: { error: t("user_icon_upload_error") }, status: 400
+    end
+  end
+
   # 最近参加したルームを返す
   def joined_rooms
     default_num = 10
