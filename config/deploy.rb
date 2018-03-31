@@ -6,8 +6,7 @@ set :repo_url, "git@github.com:Mori-Atsushi/YouTubeSyncServer.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
-# TODO: あとでmasterに戻す
-set :branch, "setup-capistrano"
+set :branch, "master"
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, "/var/www/syncpod"
