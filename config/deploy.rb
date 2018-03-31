@@ -1,3 +1,5 @@
+require "slack-notifier"
+
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.10.1"
 
@@ -78,7 +80,7 @@ namespace :deploy do
         channel: "#syncpod-server",
         username: "deploy",
         text: "#{fetch(:rails_env)}環境へ#{fetch(:branch)}をデプロイした.",
-        icon_emoji: ":aho:"
+        icon_emoji: ":aho:",
       )
     end
   end
