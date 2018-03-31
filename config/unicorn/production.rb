@@ -25,7 +25,7 @@ preload_app true
 
 # ホットデプロイを行うとGemと環境変数のloadをしてくれないので明示的にloadする
 before_exec do |_server|
-  ENV["BUNDLE_GEMFILE"] = "#{app_path}/current/Gemfile"
+  ENV["BUNDLE_GEMFILE"] = "#{$app_dir}/Gemfile"
   Bundler.require
   Dotenv.overload
 end
