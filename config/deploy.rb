@@ -74,16 +74,12 @@ namespace :deploy do
 
   task :cleanup do
     on roles(:app) do
-      execute <<-COMMAND
-        curl -X POST --data-urlencode \
-          \"payload={ \
-            \\\"channel\\\": \\\"#syncpod-server\\\", \
-            \\\"username\\\": \\\"deploy\\\", \
-            \\\"text\\\": \\\"#{fetch(:rails_env)}環境へ#{fetch(:branch)}をデプロイした.\\\", \
-            \\\"icon_emoji\\\": \\\":aho:\\\"\
-          }\" \
-        #{fetch(:slack_url)}
-      COMMAND
+      Slack::Notifier.new(fetch(:slack_url)).post(
+        channel: "#syncpod-server",
+        username: "deploy",
+        text: "#{fetch(:rails_env)}環境へ#{fetch(:branch)}をデプロイした.",
+        icon_emoji: ":aho:"
+      )
     end
   end
 end
