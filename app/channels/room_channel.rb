@@ -1,7 +1,7 @@
 class RoomChannel < ApplicationCable::Channel
   def subscribed
     @room = Room.find_by(key: params[:room_key])
-    return reject if @room.blank? || @room.banned?(current_user)
+    return reject if subscribable?(@room, current_user)
     stream_for current_user
     stream_from "room_#{@room.id}"
     ActiveRecord::Base.transaction do
@@ -13,7 +13,7 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
-    return if @room.blank?
+    return if subscribable?(@room, current_user)
     message = current_user.name + "さんが退室しました。"
     ActiveRecord::Base.transaction do
       Chat.create! room: @room, chat_type: "logout", message: message
@@ -96,5 +96,9 @@ class RoomChannel < ApplicationCable::Channel
 
     def exit_room
       UserRoomLog.where(user: current_user, room: @room, exit_at: nil).update(exit_at: Time.now.utc)
+    end
+
+    def subscribable?(room, user)
+      room.blank? || room.banned?(user)
     end
 end
