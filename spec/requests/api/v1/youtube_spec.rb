@@ -10,7 +10,7 @@ describe "room" do
 
     context "with valid params" do
       let(:params) { { keyword: keyword } }
-      it "returns a search results", :autodec do
+      it "returns a search results", :autodoc do
         is_expected.to eq 200
         body = response.body
         expect(body).to have_json_path("items")
@@ -27,7 +27,7 @@ describe "room" do
 
     context "with page token params" do
       let(:params) { { keyword: keyword, page_token: page_token } }
-      it "returns a search results", :autodec do
+      it "returns a search results", :autodoc do
         is_expected.to eq 200
         body = response.body
         expect(body).to have_json_path("items")
@@ -49,7 +49,7 @@ describe "room" do
 
     context "with valid params" do
       let(:params) { { id: id } }
-      it "returns a video", :autodec do
+      it "returns a video", :autodoc do
         is_expected.to eq 200
         body = response.body
         expect(body).to be_json_eql(%("#{id}")).at_path("youtube_video_id")
