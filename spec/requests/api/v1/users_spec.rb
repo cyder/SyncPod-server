@@ -13,6 +13,7 @@ describe "POST /api/v1/users" do
       body = response.body
       expect(body).to have_json_path("error")
     end
+    it { expect { subject }.to change(User, :count).by(0) }
   end
 
   context "with existed email" do
@@ -22,6 +23,7 @@ describe "POST /api/v1/users" do
       body = response.body
       expect(body).to have_json_path("error")
     end
+    it { expect { subject }.to change(User, :count).by(0) }
   end
 
   context "with invalid password" do
@@ -31,6 +33,7 @@ describe "POST /api/v1/users" do
       body = response.body
       expect(body).to have_json_path("error")
     end
+    it { expect { subject }.to change(User, :count).by(0) }
   end
 
   context "with valid params" do
@@ -46,5 +49,7 @@ describe "POST /api/v1/users" do
       body = response.body
       expect(body).to have_json_path("user/access_token")
     end
+
+    it { expect { subject }.to change(User, :count).by(1) }
   end
 end
