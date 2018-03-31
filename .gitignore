@@ -18,7 +18,6 @@ db/*.sqlite3
 /coverage/
 /db/*.javadb/
 /db/*.sqlite3
-/doc/*
 /public/uploads/tmp/
 /public/cache
 /public/stylesheets/compiled
