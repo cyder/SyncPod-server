@@ -48,7 +48,7 @@ set :log_level, :debug
 
 set :env_file, ".env"
 
-set :slack_url, ENV["SLACK_URL"]
+set :slack_url, ENV["DEPLOY_SLACK_URL"]
 
 namespace :deploy do
   desc "Restart application"
