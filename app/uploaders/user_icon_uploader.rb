@@ -11,7 +11,7 @@ class UserIconUploader < CarrierWave::Uploader::Base
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
     if Rails.env.test?
-      Rails.root.join("spec", "support", "uploads", model.class.to_s.underscore, mounted_as, model.id)
+      Rails.root.join("spec", "tmp", "uploads", model.class.to_s.underscore, mounted_as.to_s, model.id.to_s)
     else
       "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
     end
@@ -26,7 +26,7 @@ class UserIconUploader < CarrierWave::Uploader::Base
   # end
 
   # Process files as they are uploaded:
-  process scale: [400, 400]
+  process resize_to_fill: [400, 400, "Center"]
   #
   # def scale(width, height)
   #   # do something

@@ -10,13 +10,24 @@ describe "room" do
     let(:name) { room.name }
     let(:description) { room.description }
 
-    context "with invalid params" do
+    context "with invalid name" do
       let(:name) { nil }
       it "returns a error" do
         is_expected.to eq 400
         body = response.body
         expect(body).to have_json_path("error")
       end
+      it { expect { subject }.to change(Room, :count).by(0) }
+    end
+
+    context "with invalid description" do
+      let(:name) { nil }
+      it "returns a error" do
+        is_expected.to eq 400
+        body = response.body
+        expect(body).to have_json_path("error")
+      end
+      it { expect { subject }.to change(Room, :count).by(0) }
     end
 
     context "with valid params" do
@@ -32,6 +43,8 @@ describe "room" do
         body = response.body
         expect(body).to have_json_path("room/key")
       end
+
+      it { expect { subject }.to change(Room, :count).by(1) }
     end
 
     context "without sign in" do
@@ -40,6 +53,7 @@ describe "room" do
         is_expected.to eq 401
         expect(body).to have_json_path("error")
       end
+      it { expect { subject }.to change(Room, :count).by(0) }
     end
   end
 
