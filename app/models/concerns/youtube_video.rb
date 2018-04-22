@@ -20,7 +20,12 @@ class YoutubeVideo
     @youtube_video_id = id
     @time = VideoDuration.new(result.content_details.duration)
     @view_count = result.statistics.view_count
+    @restriction = result.content_details.region_restriction
     analyze_snippet(result.snippet)
+  end
+
+  def restricted?
+    not @restriction.nil?
   end
 
   private
