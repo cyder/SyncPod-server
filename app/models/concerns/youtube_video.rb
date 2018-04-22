@@ -21,11 +21,16 @@ class YoutubeVideo
     @time = VideoDuration.new(result.content_details.duration)
     @view_count = result.statistics.view_count
     @restriction = result.content_details.region_restriction
+    @live_broadcast_content = result.snippet.live_broadcast_content
     analyze_snippet(result.snippet)
   end
 
   def restricted?
     not @restriction.nil?
+  end
+
+  def live?
+    @live_broadcast_content == "live"
   end
 
   private
