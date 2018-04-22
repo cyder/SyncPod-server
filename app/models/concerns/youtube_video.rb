@@ -26,7 +26,7 @@ class YoutubeVideo
   end
 
   def restricted?
-    not @restriction.nil?
+    !@restriction.nil?
   end
 
   def live?
