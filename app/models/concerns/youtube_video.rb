@@ -21,7 +21,6 @@ class YoutubeVideo
     @time = VideoDuration.new(result.content_details.duration)
     @view_count = result.statistics.view_count
     @restriction = result.content_details.region_restriction
-    @live_broadcast_content = result.snippet.live_broadcast_content
     analyze_snippet(result.snippet)
   end
 
@@ -41,5 +40,6 @@ class YoutubeVideo
       @published = snippet.published_at
       @description = snippet.description
       @title = snippet.title
+      @live_broadcast_content = snippet.live_broadcast_content
     end
 end

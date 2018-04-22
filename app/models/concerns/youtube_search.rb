@@ -20,13 +20,20 @@ class YoutubeSearch
     }
 
     results = service.list_searches("id", opt)
-    items = Parallel.map(results.items, in_threads: results.items.size) do |one_letter|
-      YoutubeVideo.new one_letter.id.video_id
-    end
-    @items = items.select { |item| !item.restricted? and !item.live? }
+
+    @items = adjust(results.items)
     @next_page_token = results.next_page_token
     @prev_page_token = results.prev_page_token
     @total_results = results.page_info.total_results
     @results_per_page = results.page_info.results_per_page
   end
+
+  private
+
+    def adjust(items)
+      items = Parallel.map(items, in_threads: items.size) do |one_letter|
+        YoutubeVideo.new one_letter.id.video_id
+      end
+      items.select { |item| !item.restricted? and !item.live? }
+    end
 end
