@@ -21,7 +21,9 @@ class YoutubeSearch
 
     results = service.list_searches("id", opt)
 
-    @items = adjust(results.items)
+    @items = fetch_video_details(results.items).reject do |item|
+      item.restricted? || item.live?
+    end
     @next_page_token = results.next_page_token
     @prev_page_token = results.prev_page_token
     @total_results = results.page_info.total_results
@@ -30,10 +32,9 @@ class YoutubeSearch
 
   private
 
-    def adjust(items)
-      items = Parallel.map(items, in_threads: items.size) do |one_letter|
+    def fetch_video_details(items)
+      Parallel.map(items, in_threads: items.size) do |one_letter|
         YoutubeVideo.new one_letter.id.video_id
       end
-      items.select { |item| !item.restricted? and !item.live? }
     end
 end
