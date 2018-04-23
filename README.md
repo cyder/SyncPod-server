@@ -83,5 +83,7 @@ rails db:seed
 rails server
 ```
 
+その他は[/doc](./doc)にまとまっています。
+
 ## 著者
 * [森 篤史](@Mori-Atsushi)
