@@ -4,7 +4,7 @@ require "slack-notifier"
 lock "~> 3.10.1"
 
 set :application, "syncpod"
-set :repo_url, "git@github.com:Mori-Atsushi/YouTubeSyncServer.git"
+set :repo_url, "git@github.com:cyder/SyncPod-server.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
