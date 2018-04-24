@@ -8,29 +8,39 @@ class YoutubeSearch
               :results_per_page
 
   def initialize(keyword, page_token = nil)
-    service = Google::Apis::YoutubeV3::YouTubeService.new
-    service.key = ENV["GOOGLE_API_KEY"]
+    @items = []
+    @next_page_token = page_token
+    result = nil
 
-    opt = {
-      q: keyword,
-      type: "video",
-      page_token: page_token,
-      max_results: 10,
-      video_syndicated: true,
-    }
-
-    results = service.list_searches("id", opt)
-
-    @items = fetch_video_details(results.items).reject do |item|
-      item.restricted? || item.live?
+    loop do
+      result = fetch_video_search(keyword, @next_page_token)
+      @items += fetch_video_details(result.items).reject do |item|
+        item.restricted? || item.live?
+      end
+      @next_page_token = result.next_page_token
+      @prev_page_token = result.prev_page_token if @prev_page_token.nil?
+      @total_results = result.page_info.total_results if @total_results.nil?
+      @results_per_page = @items.size
+      break if @next_page_token.nil? || @results_per_page >= 10
     end
-    @next_page_token = results.next_page_token
-    @prev_page_token = results.prev_page_token
-    @total_results = results.page_info.total_results
-    @results_per_page = results.page_info.results_per_page
   end
 
   private
+
+    def fetch_video_search(keyword, page_token)
+      service = Google::Apis::YoutubeV3::YouTubeService.new
+      service.key = ENV["GOOGLE_API_KEY"]
+
+      opt = {
+        q: keyword,
+        type: "video",
+        page_token: page_token,
+        max_results: 10,
+        video_syndicated: true,
+      }
+
+      service.list_searches("id", opt)
+    end
 
     def fetch_video_details(items)
       Parallel.map(items, in_threads: items.size) do |one_letter|
