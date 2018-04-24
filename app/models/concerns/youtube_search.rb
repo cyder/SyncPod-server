@@ -36,6 +36,8 @@ class YoutubeSearch
         type: "video",
         page_token: page_token,
         max_results: 10,
+        safe_search: "strict",
+        video_embeddable: true,
         video_syndicated: true,
       }
 
