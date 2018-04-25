@@ -1,6 +1,8 @@
 require "google/apis/youtube_v3"
 
 class YoutubeSearch
+  MAX_ITERATE = 10
+
   attr_reader :items,
               :next_page_token,
               :prev_page_token,
@@ -12,14 +14,14 @@ class YoutubeSearch
     @next_page_token = page_token
     result = nil
 
-    loop do
+    MAX_ITERATE.times do |_|
       result = fetch_video_search(keyword, @next_page_token)
       @items += fetch_video_details(result.items).reject do |item|
         item.restricted? || item.live?
       end
       @next_page_token = result.next_page_token
-      @prev_page_token = result.prev_page_token if @prev_page_token.nil?
-      @total_results = result.page_info.total_results if @total_results.nil?
+      @prev_page_token ||= result.prev_page_token
+      @total_results ||= result.page_info.total_results
       @results_per_page = @items.size
       break if @next_page_token.nil? || @results_per_page >= 10
     end
