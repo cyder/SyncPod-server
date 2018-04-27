@@ -94,7 +94,7 @@ class RoomChannel < ApplicationCable::Channel
     def exit_room
       ActiveRecord::Base.transaction do
         updated_log = UserRoomLog.where(user: current_user, room: @room, exit_at: nil).update(exit_at: Time.now.utc)
-        if updated_log.present? then
+        if updated_log.present?
           message = current_user.name + "さんが退室しました。"
           Chat.create! room: @room, chat_type: "logout", message: message
         end
