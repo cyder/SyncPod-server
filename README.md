@@ -57,8 +57,8 @@ brew install mysql
 ## セットアップ
 1. 次のコマンドを実行する。
 ```sh
-git@github.com:Mori-Atsushi/YouTubeSyncServer.git
-cd YouTubeSyncServer
+git clone git@github.com:cyder/SyncPod-server.git
+cd cyder/SyncPod-server
 ```
 
 2. Gemライブラリをインストールする
