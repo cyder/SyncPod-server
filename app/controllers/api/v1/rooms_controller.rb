@@ -25,6 +25,10 @@ class Api::V1::RoomsController < ApplicationController
     end
   end
 
+  def popular
+    @rooms = Room.where(public: true)
+  end
+
   private
 
     def room_params

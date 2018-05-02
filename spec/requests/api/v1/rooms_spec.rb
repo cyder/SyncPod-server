@@ -143,4 +143,16 @@ describe "room" do
       end
     end
   end
+
+  describe "GET /api/v1/rooms/popular" do
+    let!(:room) { create(:public_room) }
+
+    context "with valid params" do
+      it "returns a rooms", :autodoc do
+        is_expected.to eq 200
+        body = response.body
+        expect(body).to be_json_eql(room.id).at_path("rooms/0/id")
+      end
+    end
+  end
 end
