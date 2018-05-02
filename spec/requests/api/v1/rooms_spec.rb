@@ -48,13 +48,15 @@ describe "room" do
     end
 
     context "with valid params with public flag" do
-      let(:params) { { room: { name: name, description: description, public: true } } }
+      let(:public) { true }
+      let(:params) { { room: { name: name, description: description, public: public } } }
 
       it "returns a room", :autodoc do
         is_expected.to eq 200
         body = response.body
         expect(body).to have_json_path("room")
         expect(body).to be_json_eql(%("#{room.name}")).at_path("room/name")
+        expect(body).to be_json_eql(public).at_path("room/public")
       end
     end
 
