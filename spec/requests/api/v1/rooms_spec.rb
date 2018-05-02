@@ -157,5 +157,13 @@ describe "room" do
         expect(body).to be_json_eql(room.id).at_path("rooms/0/id")
       end
     end
+
+    context "without sign in" do
+      let(:headers) { { "Authorization" => nil } }
+      it "returns a error message" do
+        is_expected.to eq 401
+        expect(body).to have_json_path("error")
+      end
+    end
   end
 end
