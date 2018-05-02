@@ -147,10 +147,11 @@ describe "room" do
   describe "GET /api/v1/rooms/popular" do
     let(:margin) { 10 }
     let(:entry_at) { Time.now.utc - margin }
-    let!(:room) { create(:public_room) }
-    let!(:user_room_log) { create(:user_room_log, room: room, exit_at: false) }
+    let(:room) { create(:public_room) }
+    let(:user_room_log) { build(:user_room_log, room: room, exit_at: false) }
 
     context "with valid params" do
+      before { user_room_log.save! }
       it "returns a rooms", :autodoc do
         is_expected.to eq 200
         body = response.body
