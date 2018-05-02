@@ -1,6 +1,8 @@
 class Api::V1::RoomsController < ApplicationController
   include ApiCommon
 
+  MAX = 10
+
   def index
     @room = Room.find_by(key: params[:room_key])
     if @room.blank?
@@ -26,7 +28,11 @@ class Api::V1::RoomsController < ApplicationController
   end
 
   def popular
-    @rooms = Room.where(public: true)
+    @rooms = Room.where(public: true).
+               sort_by { |room| room.online_users.size }.
+               select { |room| room.online_users.present? }.
+               reverse.
+               take(MAX)
   end
 
   private
