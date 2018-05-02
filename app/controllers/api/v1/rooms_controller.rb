@@ -1,8 +1,6 @@
 class Api::V1::RoomsController < ApplicationController
   include ApiCommon
 
-  MAX = 10
-
   def index
     @room = Room.find_by(key: params[:room_key])
     if @room.blank?
@@ -28,12 +26,9 @@ class Api::V1::RoomsController < ApplicationController
   end
 
   def popular
-    @rooms = Room.where(public: true).
-               joins(:user_room_logs).
-               merge(UserRoomLog.where(exit_at: nil)).
-               group(:id).
-               order("count(*) DESC").
-               limit(MAX)
+    max_num = 10
+
+    @rooms = Room.popularity.limit(max_num)
   end
 
   private

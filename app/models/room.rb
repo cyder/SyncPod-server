@@ -9,6 +9,14 @@ class Room < ApplicationRecord
 
   before_create :set_room_key
 
+  scope :popularity, -> {
+    where(public: true).
+      joins(:user_room_logs).
+      merge(UserRoomLog.where(exit_at: nil)).
+      group(:id).
+      order("count(*) DESC")
+  }
+
   def add_video(youtube_video_id, user)
     video_start_time = calc_video_start_time
 
