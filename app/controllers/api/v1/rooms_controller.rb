@@ -29,10 +29,11 @@ class Api::V1::RoomsController < ApplicationController
 
   def popular
     @rooms = Room.where(public: true).
-               sort_by { |room| room.online_users.size }.
-               select { |room| room.online_users.present? }.
-               reverse.
-               take(MAX)
+               joins(:user_room_logs).
+               merge(UserRoomLog.where(exit_at: nil)).
+               group(:id).
+               order("count(*) DESC").
+               limit(MAX)
   end
 
   private
