@@ -31,7 +31,7 @@ describe "room" do
     end
 
     context "with valid params" do
-      it "returns a room", :autodoc do
+      it "returns a room" do
         is_expected.to eq 200
         body = response.body
         expect(body).to have_json_path("room")
@@ -45,6 +45,18 @@ describe "room" do
       end
 
       it { expect { subject }.to change(Room, :count).by(1) }
+    end
+
+    context "with valid params with public flag" do
+      let(:public) { true }
+      let(:params) { { room: { name: name, description: description, public: public } } }
+
+      it "returns a room", :autodoc do
+        is_expected.to eq 200
+        body = response.body
+        expect(body).to have_json_path("room")
+        expect(body).to be_json_eql(public).at_path("room/public")
+      end
     end
 
     context "without sign in" do
