@@ -55,7 +55,6 @@ describe "room" do
         is_expected.to eq 200
         body = response.body
         expect(body).to have_json_path("room")
-        expect(body).to be_json_eql(%("#{room.name}")).at_path("room/name")
         expect(body).to be_json_eql(public).at_path("room/public")
       end
     end
