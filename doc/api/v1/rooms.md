@@ -130,3 +130,54 @@ X-XSS-Protection: 1; mode=block
   }
 }
 ```
+
+## GET /api/v1/rooms/popular
+Returns a rooms.
+
+### Example
+
+#### Request
+```
+GET /api/v1/rooms/popular HTTP/1.1
+Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
+Authorization: 4995:ytw9UZvnBeF-ECjQfndz
+Content-Length: 0
+Host: www.example.com
+```
+
+#### Response
+```
+HTTP/1.1 200
+Cache-Control: max-age=0, private, must-revalidate
+Content-Length: 215
+Content-Type: application/json; charset=utf-8
+ETag: W/"1a62a2ac44a8341b418c4517844b5220"
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Request-Id: 00d2c354-a9a6-4d80-b962-1c1826bf1700
+X-Runtime: 0.015650
+X-XSS-Protection: 1; mode=block
+
+{
+  "rooms": [
+    {
+      "id": 3445,
+      "name": "public room",
+      "description": "MyText",
+      "key": "ICrZslae",
+      "public": true,
+      "now_playing_video": null,
+      "last_played_video": null,
+      "online_users": [
+        {
+          "id": 4995,
+          "name": "MyString",
+          "icon": {
+            "url": null
+          }
+        }
+      ]
+    }
+  ]
+}
+```
