@@ -7,6 +7,7 @@
  * [POST /api/v1/rooms](api/v1/rooms.md#post-apiv1rooms)
  * [GET /api/v1/rooms/:id](api/v1/rooms.md#get-apiv1roomsid)
  * [GET /api/v1/rooms](api/v1/rooms.md#get-apiv1rooms)
+ * [GET /api/v1/rooms/popular](api/v1/rooms.md#get-apiv1roomspopular)
 * [api/v1/upload_user_icon.md](api/v1/upload_user_icon.md)
  * [POST /api/v1/users/upload_icon](api/v1/upload_user_icon.md#post-apiv1usersupload_icon)
 * [api/v1/user_report.md](api/v1/user_report.md)
