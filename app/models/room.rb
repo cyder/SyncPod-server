@@ -9,9 +9,10 @@ class Room < ApplicationRecord
 
   before_create :set_room_key
 
-  scope :popularity, -> {
-    where(public: true).
-      joins(:user_room_logs).
+  scope :published, -> { where(public: true) }
+
+  scope :order_by_online_user, -> {
+    joins(:user_room_logs).
       merge(UserRoomLog.where(exit_at: nil)).
       group(:id).
       order("count(*) DESC")
