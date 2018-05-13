@@ -1,6 +1,8 @@
 require "google/apis/youtube_v3"
 
 class YoutubeSearch
+  MAX_ITERATE = 10
+
   attr_reader :items,
               :next_page_token,
               :prev_page_token,
@@ -8,24 +10,45 @@ class YoutubeSearch
               :results_per_page
 
   def initialize(keyword, page_token = nil)
-    service = Google::Apis::YoutubeV3::YouTubeService.new
-    service.key = Settings.google.api_key
+    @items = []
+    @next_page_token = page_token
+    result = nil
 
-    opt = {
-      q: keyword,
-      type: "video",
-      page_token: page_token,
-      max_results: 10,
-      video_syndicated: true,
-    }
-
-    results = service.list_searches("id", opt)
-    @items = Parallel.map(results.items, in_threads: results.items.size) do |one_letter|
-      YoutubeVideo.new one_letter.id.video_id
+    MAX_ITERATE.times do |_|
+      result = fetch_video_search(keyword, @next_page_token)
+      @items += fetch_video_details(result.items).reject do |item|
+        item.restricted? || item.live?
+      end
+      @next_page_token = result.next_page_token
+      @prev_page_token ||= result.prev_page_token
+      @total_results ||= result.page_info.total_results
+      @results_per_page = @items.size
+      break if @next_page_token.nil? || @results_per_page >= 10
     end
-    @next_page_token = results.next_page_token
-    @prev_page_token = results.prev_page_token
-    @total_results = results.page_info.total_results
-    @results_per_page = results.page_info.results_per_page
   end
+
+  private
+
+    def fetch_video_search(keyword, page_token)
+      service = Google::Apis::YoutubeV3::YouTubeService.new
+      service.key = ENV["GOOGLE_API_KEY"]
+
+      opt = {
+        q: keyword,
+        type: "video",
+        page_token: page_token,
+        max_results: 10,
+        safe_search: "strict",
+        video_embeddable: true,
+        video_syndicated: true,
+      }
+
+      service.list_searches("id", opt)
+    end
+
+    def fetch_video_details(items)
+      Parallel.map(items, in_threads: items.size) do |one_letter|
+        YoutubeVideo.new one_letter.id.video_id
+      end
+    end
 end

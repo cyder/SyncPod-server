@@ -25,9 +25,17 @@ class Api::V1::RoomsController < ApplicationController
     end
   end
 
+  def popular
+    max_num = 10
+
+    @rooms = Room.published.
+               order_by_online_user.
+               limit(max_num)
+  end
+
   private
 
     def room_params
-      params.require(:room).permit(:name, :description)
+      params.require(:room).permit(:name, :description, :public)
     end
 end

@@ -36,6 +36,7 @@ gem "redis", "~> 3.0"
 gem "carrierwave"
 gem "config"
 gem "devise"
+gem "dotenv-rails"
 gem "fog"
 gem "google-api-client", "~> 0.11"
 gem "mini_magick"
@@ -71,6 +72,15 @@ group :development do
   # in the background. Read more: https://github.com/rails/spring
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
+
+  gem "capistrano"
+  gem "capistrano-bundler"
+  gem "capistrano-rails"
+  gem "capistrano-rbenv"
+end
+
+group :production do
+  gem "unicorn"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

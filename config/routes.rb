@@ -10,7 +10,11 @@ Rails.application.routes.draw do
           post :upload_icon
         end
       end
-      resources :rooms, only: [:index, :create, :show]
+      resources :rooms, only: [:index, :create, :show] do
+        collection do
+          get :popular
+        end
+      end
       get "joined_rooms", to: "users#joined_rooms"
       get "youtube/search", to: "youtube#search"
       get "youtube/video", to: "youtube#video"

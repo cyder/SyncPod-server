@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180317055145) do
+ActiveRecord::Schema.define(version: 20180502070842) do
 
   create_table "ban_reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.bigint "target_id"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20180317055145) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "public", default: false, null: false
     t.index ["key"], name: "index_rooms_on_key"
   end
 

@@ -146,5 +146,7 @@ describe RoomChannel, type: :channel do
                             }
     end
     it { expect { subject }.to change(BanReport, :count).by(1) }
+    it { expect { subject }.to change(Chat, :count).by(1) }
+    it { expect { subject }.to change { room.online_users.count }.by(-1) }
   end
 end
