@@ -44,7 +44,7 @@ describe "room" do
         expect(body).to have_json_path("room/key")
       end
 
-      it "returns a crate user" do
+      it "returns a create user" do
         is_expected.to eq 200
         body = response.body
         expect(body).to have_json_path("room/create_user")
