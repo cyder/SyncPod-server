@@ -13,4 +13,4 @@ json.online_users do
 end
 json.create_user do
   json.partial! room.create_user
-end
+end if room.create_user.present?
