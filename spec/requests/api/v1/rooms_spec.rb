@@ -44,6 +44,13 @@ describe "room" do
         expect(body).to have_json_path("room/key")
       end
 
+      it "returns a create user" do
+        is_expected.to eq 200
+        body = response.body
+        expect(body).to have_json_path("room/create_user")
+        expect(body).to be_json_eql(user.id).at_path("room/create_user/id")
+      end
+
       it { expect { subject }.to change(Room, :count).by(1) }
     end
 

@@ -11,3 +11,6 @@ json.online_users do
     json.partial! user
   end
 end
+json.create_user do
+  json.partial! room.create_user
+end

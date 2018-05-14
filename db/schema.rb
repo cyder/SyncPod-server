@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180502070842) do
+ActiveRecord::Schema.define(version: 20180514003339) do
 
   create_table "ban_reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.bigint "target_id"
@@ -42,6 +42,8 @@ ActiveRecord::Schema.define(version: 20180502070842) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "public", default: false, null: false
+    t.bigint "create_user_id"
+    t.index ["create_user_id"], name: "index_rooms_on_create_user_id"
     t.index ["key"], name: "index_rooms_on_key"
   end
 
@@ -106,6 +108,7 @@ ActiveRecord::Schema.define(version: 20180502070842) do
   end
 
   add_foreign_key "chats", "users"
+  add_foreign_key "rooms", "users", column: "create_user_id"
   add_foreign_key "videos", "rooms"
   add_foreign_key "videos", "users", column: "add_user_id"
 end

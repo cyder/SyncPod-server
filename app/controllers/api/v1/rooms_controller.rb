@@ -12,6 +12,7 @@ class Api::V1::RoomsController < ApplicationController
 
   def create
     @room = Room.new room_params
+    @room.create_user = current_user
     unless @room.save
       # TODO: localeファイルに書いておくやつな気がする
       render json: { error: t("room_create_error") }, status: 400

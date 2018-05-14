@@ -58,7 +58,7 @@ brew install mysql
 1. 次のコマンドを実行する。
 ```sh
 git clone git@github.com:cyder/SyncPod-server.git
-cd cyder/SyncPod-server
+cd SyncPod-server
 ```
 
 2. Gemライブラリをインストールする

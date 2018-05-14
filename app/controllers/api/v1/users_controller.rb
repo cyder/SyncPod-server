@@ -15,6 +15,13 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def update
+    @user = current_user
+    unless @user.update(user_params)
+      render json: { error: t("user_create_error") }, status: 400
+    end
+  end
+
   def upload_icon
     @user = current_user
     unless @user.update(icon: params[:icon])
