@@ -5,7 +5,7 @@ class RoomChannel < ApplicationCable::Channel
     stream_for current_user
     stream_from "room_#{@room.id}"
     ActiveRecord::Base.transaction do
-      exit_room(current_user)
+      @room.exit(current_user)
       message = current_user.name + "さんが入室しました。"
       Chat.create! room: @room, chat_type: "login", message: message
       UserRoomLog.create! user: current_user, room: @room, entry_at: Time.now.utc
@@ -14,7 +14,7 @@ class RoomChannel < ApplicationCable::Channel
 
   def unsubscribed
     return if subscribable?(@room, current_user)
-    exit_room(current_user)
+    @room.exit(current_user)
   end
 
   def now_playing_video
@@ -45,7 +45,7 @@ class RoomChannel < ApplicationCable::Channel
 
   def exit_force(data)
     target = User.find(data["user_id"])
-    exit_room(target)
+    @room.exit(target)
     RoomChannel.broadcast_to target,
                              render_error_json("force exit")
     BanReport.create! target: target,
@@ -89,17 +89,6 @@ class RoomChannel < ApplicationCable::Channel
                                             formats: "json",
                                             handlers: "jbuilder",
                                             locals: { message: message })
-    end
-
-    def exit_room(user)
-      ActiveRecord::Base.transaction do
-        log = UserRoomLog.find_by(user: user, room: @room, exit_at: nil)
-        if log.present?
-          log.update!(exit_at: Time.now.utc)
-          message = user.name + "さんが退室しました。"
-          Chat.create! room: @room, chat_type: "logout", message: message
-        end
-      end
     end
 
     def subscribable?(room, user)
