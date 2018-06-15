@@ -137,7 +137,10 @@ describe RoomChannel, type: :channel do
     let(:another_user) { create(:user1) }
     let(:another_target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, another_user]) }
 
-    before { subscribe room_key: room.key }
+    before do
+      stub_connection current_user: another_user
+      subscribe room_key: room.key
+    end
 
     it "expect to have broadcast with error" do
       expect { subject }.to have_broadcasted_to(another_target).with { |data|
