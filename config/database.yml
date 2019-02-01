@@ -51,6 +51,7 @@ test:
 #
 production:
   <<: *default
-  database: YouTube_Sync_production
-  username: YouTube_Sync
-  password: <%= ENV['YOUTUBE_SYNC_PASSWORD'] %>
+  database: <%= ENV.fetch('SYNCPOD_DB_NAME') %>
+  username: <%= ENV.fetch('SYNCPOD_DB_USER') %>
+  password: <%= ENV.fetch('SYNCPOD_DB_PASSWORD') %>
+  host: <%= ENV.fetch('SYNCPOD_DB_HOST') %>
