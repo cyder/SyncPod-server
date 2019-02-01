@@ -7,7 +7,7 @@
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
 
-server "api.sync-pod.com", user: "root", roles: %w[app db web]
+server ENV.fetch("SYNCPOD_APP_HOST"), user: ENV.fetch("SYNCPOD_APP_USER"), roles: %w[app db web]
 
 # role-based syntax
 # ==================
@@ -43,7 +43,7 @@ server "api.sync-pod.com", user: "root", roles: %w[app db web]
 #    auth_methods: %w(password)
 #  }
 #
-set :ssh_options, keys: "~/.ssh/id_rsa"
+set :ssh_options, keys: ENV.fetch("SYNCPOD_APP_KEY")
 
 # The server-based syntax can be used to override options:
 # ------------------------------------
