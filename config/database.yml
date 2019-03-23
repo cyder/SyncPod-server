@@ -49,9 +49,12 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
-production:
+production: &production
   <<: *default
   database: <%= ENV.fetch('SYNCPOD_DB_NAME') %>
   username: <%= ENV.fetch('SYNCPOD_DB_USER') %>
   password: <%= ENV.fetch('SYNCPOD_DB_PASSWORD') %>
   host: <%= ENV.fetch('SYNCPOD_DB_HOST') %>
+
+staging:
+  <<: *production
