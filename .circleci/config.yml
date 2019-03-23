@@ -3,7 +3,7 @@ jobs:
   bundle_dependencies:
     working_directory: ~/syncpod
     docker:
-      - image: circleci/ruby:2.4.2-node
+      - image: circleci/ruby:2.4.1-node
         environment:
           RAILS_ENV: test
     steps:
@@ -25,7 +25,7 @@ jobs:
   rspec_test:
     working_directory: ~/syncpod
     docker:
-      - image: circleci/ruby:2.4.2-node
+      - image: circleci/ruby:2.4.1-node
         environment:
           RAILS_ENV: test
           GOOGLE_API_KEY: AIzaSyD7HERo0T7Lyhr_spJ9UTr4f3q7uUSNVSM
