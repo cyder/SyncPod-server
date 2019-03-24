@@ -28,7 +28,6 @@ jobs:
       - image: circleci/ruby:2.4.1-node
         environment:
           RAILS_ENV: test
-          GOOGLE_API_KEY: AIzaSyD7HERo0T7Lyhr_spJ9UTr4f3q7uUSNVSM
       - image: circleci/mysql:5.7
     steps:
       - checkout
