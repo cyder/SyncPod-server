@@ -8,6 +8,8 @@ class User < ApplicationRecord
 
   mount_uploader :icon, UserIconUploader
 
+  validates :name, presence: true
+
   has_many :videos, dependent: :destroy
   has_many :chats, dependent: :destroy
   has_many :user_room_logs, dependent: :destroy
