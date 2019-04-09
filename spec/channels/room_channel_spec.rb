@@ -4,7 +4,7 @@ describe RoomChannel, type: :channel do
   let(:room) { create(:room) }
   let(:room_key) { room.key }
   let(:user) { create(:user) }
-  let(:target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, user]) }
+  let(:target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, subscription.uuid]) }
   let(:stream_from) { "room_" + room.id.to_s }
   before { stub_connection current_user: user }
 
@@ -135,7 +135,8 @@ describe RoomChannel, type: :channel do
     subject { perform :exit_force, user_id: another_user.id }
 
     let(:another_user) { create(:user1) }
-    let(:another_target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, another_user]) }
+    let(:user_room_log) { create(:user_room_log, user: another_user, room: room, exit_at: nil) }
+    let(:another_target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, user_room_log.uuid]) }
 
     before do
       stub_connection current_user: another_user

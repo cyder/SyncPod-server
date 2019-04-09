@@ -1,34 +1,36 @@
 class RoomChannel < ApplicationCable::Channel
+  attr_reader :uuid
+
   def subscribed
     @room = Room.find_by(key: params[:room_key])
     return reject if subscribable?(@room, current_user)
-    stream_for current_user
+    @uuid = SecureRandom.uuid
+    stream_for @uuid
     stream_from "room_#{@room.id}"
     ActiveRecord::Base.transaction do
-      @room.exit(current_user)
       message = current_user.name + "さんが入室しました。"
       Chat.create! room: @room, chat_type: "login", message: message
-      UserRoomLog.create! user: current_user, room: @room, entry_at: Time.now.utc
+      UserRoomLog.create! user: current_user, room: @room, uuid: @uuid, entry_at: Time.now.utc
     end
   end
 
   def unsubscribed
     return if subscribable?(@room, current_user)
-    @room.exit(current_user)
+    @room.exit(@uuid)
   end
 
   def now_playing_video
-    RoomChannel.broadcast_to current_user,
+    RoomChannel.broadcast_to @uuid,
                              render_now_playing_video_json(@room)
   end
 
   def play_list
-    RoomChannel.broadcast_to current_user,
+    RoomChannel.broadcast_to @uuid,
                              render_play_list_json(@room)
   end
 
   def past_chats
-    RoomChannel.broadcast_to current_user,
+    RoomChannel.broadcast_to @uuid,
                              render_past_chats_json(@room)
   end
 
@@ -45,9 +47,12 @@ class RoomChannel < ApplicationCable::Channel
 
   def exit_force(data)
     target = User.find(data["user_id"])
-    @room.exit(target)
-    RoomChannel.broadcast_to target,
-                             render_error_json("force exit")
+    logs = @room.online_user_room_logs.where(user: target)
+    logs.each do |log|
+      RoomChannel.broadcast_to log.uuid,
+                               render_error_json("force exit")
+      @room.exit(log.uuid)
+    end
     BanReport.create! target: target,
                       reporter: current_user,
                       room: @room,

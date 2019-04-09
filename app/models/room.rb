@@ -60,20 +60,27 @@ class Room < ApplicationRecord
   end
 
   def online_users
-    User.where(id: user_room_logs.where(exit_at: nil).select(:user_id).distinct)
+    User.where(id: online_user_room_logs.select(:user_id).distinct)
+  end
+
+  def online_user_room_logs
+    user_room_logs.where(exit_at: nil)
   end
 
   def banned?(user)
     ban_reports.where(target: user).effective.present?
   end
 
-  def exit(user)
+  def exit(uuid)
     ActiveRecord::Base.transaction do
-      log = user_room_logs.find_by(user: user, exit_at: nil)
+      log = online_user_room_logs.find_by(uuid: uuid)
       if log.present?
         log.update!(exit_at: Time.now.utc)
-        message = user.name + "さんが退室しました。"
-        chats.create! chat_type: "logout", message: message
+        # そのルームに同一ユーザがもういなかったらログアウトメッセージを送信する
+        unless online_user_room_logs.exists?(user: log.user)
+          message = log.user.name + "さんが退室しました。"
+          chats.create! chat_type: "logout", message: message
+        end
       end
     end
   end
