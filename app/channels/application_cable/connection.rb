@@ -4,7 +4,7 @@ module ApplicationCable
 
     def connect
       auth_token = request.params[:token]
-      self.current_user = if access_token.present?
+      self.current_user = if auth_token.present?
                             find_verified_user auth_token
                           else
                             nil
