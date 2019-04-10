@@ -1,4 +1,4 @@
-# YouTubeSyncServer
+# YouTubeSyncServer | [![CircleCI](https://circleci.com/gh/cyder/SyncPod-server.svg?style=svg)](https://circleci.com/gh/cyder/SyncPod-server) [![codecov](https://codecov.io/gh/cyder/SyncPod-server/branch/master/graph/badge.svg)](https://codecov.io/gh/cyder/SyncPod-server)
 YouTubeSyncのサーバ用リポジトリです。
 
 ## 必要環境

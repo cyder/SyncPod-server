@@ -53,6 +53,7 @@ group :development, :test do
   gem "action-cable-testing"
   gem "autodoc"
   gem "capybara", "~> 2.13"
+  gem "codecov", require: false
   gem "database_rewinder"
   gem "factory_bot_rails"
   gem "json_spec"
@@ -61,7 +62,7 @@ group :development, :test do
   gem "rspec-request_describer"
   gem "rubocop"
   gem "selenium-webdriver"
-  gem "simplecov"
+  gem "simplecov", require: false
 end
 
 group :development do
