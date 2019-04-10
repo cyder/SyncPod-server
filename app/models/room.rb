@@ -71,6 +71,21 @@ class Room < ApplicationRecord
     ban_reports.where(target: user).effective.present?
   end
 
+  def enter(user = nil)
+    uuid = SecureRandom.uuid
+
+    if user.present?
+      return nil if banned?(user)
+      ActiveRecord::Base.transaction do
+        message = user.name + "さんが入室しました。"
+        Chat.create! room: self, chat_type: "login", message: message
+        UserRoomLog.create! user: user, room: self, uuid: uuid, entry_at: Time.now.utc
+      end
+    end
+
+    uuid
+  end
+
   def exit(uuid)
     ActiveRecord::Base.transaction do
       log = online_user_room_logs.find_by(uuid: uuid)

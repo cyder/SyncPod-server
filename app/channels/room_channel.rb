@@ -3,15 +3,13 @@ class RoomChannel < ApplicationCable::Channel
 
   def subscribed
     @room = Room.find_by(key: params[:room_key])
-    return reject if subscribable?(@room, current_user)
-    @uuid = SecureRandom.uuid
+    return reject if @room.blank?
+
+    @uuid = @room.enter(current_user)
+    return reject if @uuid.blank?
+
     stream_for @uuid
     stream_from "room_#{@room.id}"
-    ActiveRecord::Base.transaction do
-      message = current_user.name + "さんが入室しました。"
-      Chat.create! room: @room, chat_type: "login", message: message
-      UserRoomLog.create! user: current_user, room: @room, uuid: @uuid, entry_at: Time.now.utc
-    end
   end
 
   def unsubscribed
@@ -35,6 +33,8 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def add_video(data)
+    return if current_user.blank?
+
     video = @room.add_video(data["youtube_video_id"], current_user)
     return video if video.blank?
     add_message = video.add_user.name + "さんが「" + video.title + "」を追加しました。"
@@ -46,6 +46,8 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def exit_force(data)
+    return if current_user.blank?
+
     target = User.find(data["user_id"])
     logs = @room.online_user_room_logs.where(user: target)
     logs.each do |log|
@@ -60,6 +62,8 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def message(data)
+    return if current_user.blank?
+
     Chat.create! room: @room,
                  chat_type: "user",
                  message: data["message"],

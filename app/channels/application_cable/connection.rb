@@ -8,14 +8,13 @@ module ApplicationCable
 
     private
 
-      # TODO: nilを返すのが正しいの？
       def find_verified_user
         auth_token = request.params[:token]
 
         if auth_token
           unless auth_token.include?(":")
             reject_unauthorized_connection
-            return
+            return nil
           end
 
           user_id = auth_token.split(":").first
@@ -25,11 +24,10 @@ module ApplicationCable
             user
           else
             reject_unauthorized_connection
-            return
+            return nil
           end
         else
-          reject_unauthorized_connection
-          return
+          return nil
         end
       end
   end
