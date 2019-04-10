@@ -6,20 +6,29 @@ describe RoomChannel, type: :channel do
   let(:user) { create(:user) }
   let(:target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, subscription.uuid]) }
   let(:stream_from) { "room_" + room.id.to_s }
-  before { stub_connection current_user: user }
+  let(:current_user) { user }
+  before { stub_connection current_user: current_user }
 
   describe "subscribes to a stream (subscription and streams)" do
-    before { subscribe room_key: room_key }
+    describe "when user is not banned" do
+      before { subscribe room_key: room_key }
 
-    context "with correct params" do
-      it { expect(subscription).to be_confirmed }
-      it { expect(streams).to include(stream_from) }
-    end
+      context "with correct params" do
+        it { expect(subscription).to be_confirmed }
+        it { expect(streams).to include(stream_from) }
+      end
 
-    context "with invalid params" do
-      let(:room_key) { "invalid_key" }
+      context "with invalid params" do
+        let(:room_key) { "invalid_key" }
 
-      it { expect(subscription).to be_rejected }
+        it { expect(subscription).to be_rejected }
+      end
+
+      context "without login" do
+        let(:current_user) { nil }
+        it { expect(subscription).to be_confirmed }
+        it { expect(streams).to include(stream_from) }
+      end
     end
 
     describe "when user is banned" do
@@ -28,13 +37,13 @@ describe RoomChannel, type: :channel do
         subscribe room_key: room_key
       end
 
-      context "expiration_at > now" do
+      context "before expiration date" do
         let(:expiration_at) { Time.now.utc + 60 * 60 * 24 }
 
         it { expect(subscription).to be_rejected }
       end
 
-      context "expiration_at < now" do
+      context "after expiration date" do
         let(:expiration_at) { Time.now.utc - 60 * 60 * 24 }
 
         it { expect(subscription).to be_confirmed }
@@ -58,6 +67,14 @@ describe RoomChannel, type: :channel do
       it { expect { subject }.to change(UserRoomLog, :count).by(0) }
       it { expect { subject }.to change { room.online_users.count }.by(0) }
     end
+
+    context "without login" do
+      let(:current_user) { nil }
+
+      it { expect { subject }.to change(Chat, :count).by(0) }
+      it { expect { subject }.to change(UserRoomLog, :count).by(0) }
+      it { expect { subject }.to change { room.online_users.count }.by(0) }
+    end
   end
 
   describe "perform :unsubscribed" do
@@ -66,6 +83,13 @@ describe RoomChannel, type: :channel do
     before { subscribe room_key: room.key }
     it { expect { subject }.to change(Chat, :count).by(1) }
     it { expect { subject }.to change { room.online_users.count }.by(-1) }
+
+    context "without login" do
+      let(:current_user) { nil }
+
+      it { expect { subject }.to change(Chat, :count).by(0) }
+      it { expect { subject }.to change { room.online_users.count }.by(0) }
+    end
   end
 
   describe "perform :now_playint_video" do
@@ -76,6 +100,16 @@ describe RoomChannel, type: :channel do
       expect { subject }.to have_broadcasted_to(target).with { |data|
                               expect(data).to be_json_eql(%("now_playing_video")).at_path("data_type")
                             }
+    end
+
+    context "without login" do
+      let(:current_user) { nil }
+
+      it "expect to have broadcast" do
+        expect { subject }.to have_broadcasted_to(target).with { |data|
+                                expect(data).to be_json_eql(%("now_playing_video")).at_path("data_type")
+                              }
+      end
     end
   end
 
@@ -88,6 +122,16 @@ describe RoomChannel, type: :channel do
                               expect(data).to be_json_eql(%("play_list")).at_path("data_type")
                             }
     end
+
+    context "without login" do
+      let(:current_user) { nil }
+
+      it "expect to have broadcast" do
+        expect { subject }.to have_broadcasted_to(target).with { |data|
+                                expect(data).to be_json_eql(%("play_list")).at_path("data_type")
+                              }
+      end
+    end
   end
 
   describe "perform :past_chats" do
@@ -98,6 +142,16 @@ describe RoomChannel, type: :channel do
       expect { subject }.to have_broadcasted_to(target).with { |data|
                               expect(data).to be_json_eql(%("past_chats")).at_path("data_type")
                             }
+    end
+
+    context "without login" do
+      let(:current_user) { nil }
+
+      it "expect to have broadcast" do
+        expect { subject }.to have_broadcasted_to(target).with { |data|
+                                expect(data).to be_json_eql(%("past_chats")).at_path("data_type")
+                              }
+      end
     end
 
     context "when room have a chat" do
@@ -121,6 +175,13 @@ describe RoomChannel, type: :channel do
     it "is sends add_message_broadcast_job" do
       assert_enqueued_with(job: MessageReservationJob) { subject }
     end
+
+    context "without login" do
+      let(:current_user) { nil }
+
+      it { expect { subject }.to change(Video, :count).by(0) }
+      it { expect { subject }.to change(Chat, :count).by(0) }
+    end
   end
 
   describe "perform :message" do
@@ -129,6 +190,12 @@ describe RoomChannel, type: :channel do
     let(:message) { "message" }
     before { subscribe room_key: room.key }
     it { expect { subject }.to change(Chat, :count).by(1) }
+
+    context "without login" do
+      let(:current_user) { nil }
+
+      it { expect { subject }.to change(Chat, :count).by(0) }
+    end
   end
 
   describe "perform :exit_force" do
@@ -138,10 +205,10 @@ describe RoomChannel, type: :channel do
     let(:user_room_log) { create(:user_room_log, user: another_user, room: room, exit_at: nil) }
     let(:another_target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, user_room_log.uuid]) }
 
-    before do
-      stub_connection current_user: another_user
+    before {
+      user_room_log.save!
       subscribe room_key: room.key
-    end
+    }
 
     it "expect to have broadcast with error" do
       expect { subject }.to have_broadcasted_to(another_target).with { |data|
@@ -152,5 +219,13 @@ describe RoomChannel, type: :channel do
     it { expect { subject }.to change(BanReport, :count).by(1) }
     it { expect { subject }.to change(Chat, :count).by(1) }
     it { expect { subject }.to change { room.online_users.count }.by(-1) }
+
+    context "without login" do
+      let(:current_user) { nil }
+
+      it { expect { subject }.to change(BanReport, :count).by(0) }
+      it { expect { subject }.to change(Chat, :count).by(0) }
+      it { expect { subject }.to change { room.online_users.count }.by(0) }
+    end
   end
 end
