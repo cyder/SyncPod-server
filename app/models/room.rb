@@ -68,19 +68,15 @@ class Room < ApplicationRecord
     ban_reports.where(target: user).effective.present?
   end
 
-  def enter(user = nil)
-    uuid = SecureRandom.uuid
-
-    if user.present?
-      return nil if banned?(user)
-      ActiveRecord::Base.transaction do
+  def enter(user, uuid)
+    ActiveRecord::Base.transaction do
+      # そのルームに同一ユーザがいなかったら入室メッセージを送信する
+      unless online_user_room_logs.exists?(user: user)
         message = user.name + "さんが入室しました。"
-        Chat.create! room: self, chat_type: "login", message: message
-        UserRoomLog.create! user: user, room: self, uuid: uuid, entry_at: Time.now.utc
+        chats.create! chat_type: "login", message: message
       end
+      user_room_logs.create! user: user, uuid: uuid, entry_at: Time.now.utc
     end
-
-    uuid
   end
 
   def exit(uuid)
@@ -88,7 +84,7 @@ class Room < ApplicationRecord
       log = online_user_room_logs.find_by(uuid: uuid)
       if log.present?
         log.update!(exit_at: Time.now.utc)
-        # そのルームに同一ユーザがもういなかったらログアウトメッセージを送信する
+        # そのルームに同一ユーザがもういなかったら退室メッセージを送信する
         unless online_user_room_logs.exists?(user: log.user)
           message = log.user.name + "さんが退室しました。"
           chats.create! chat_type: "logout", message: message

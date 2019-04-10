@@ -5,15 +5,19 @@ class RoomChannel < ApplicationCable::Channel
     @room = Room.find_by(key: params[:room_key])
     return reject if @room.blank?
 
-    @uuid = @room.enter(current_user)
-    return reject if @uuid.blank?
+    @uuid = SecureRandom.uuid
+    if current_user.present?
+      return reject if @room.banned?(current_user)
+      @room.enter(current_user, @uuid)
+    end
 
     stream_for @uuid
     stream_from "room_#{@room.id}"
   end
 
   def unsubscribed
-    return if subscribable?(@room, current_user)
+    # 既に強制退出されているときは退出処理を行わない
+    return if @room.blank? || @room.banned?(current_user)
     @room.exit(@uuid)
   end
 
@@ -98,9 +102,5 @@ class RoomChannel < ApplicationCable::Channel
                                             formats: "json",
                                             handlers: "jbuilder",
                                             locals: { message: message })
-    end
-
-    def subscribable?(room, user)
-      room.blank? || room.banned?(user)
     end
 end
