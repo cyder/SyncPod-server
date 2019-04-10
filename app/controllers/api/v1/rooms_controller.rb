@@ -1,5 +1,6 @@
 class Api::V1::RoomsController < ApplicationController
   include ApiCommon
+  skip_before_action :authenticate_user_from_token!, only: [:index, :show, :popular]
 
   def index
     @room = Room.find_by(key: params[:room_key])
