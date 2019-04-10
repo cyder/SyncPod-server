@@ -15,7 +15,8 @@ describe RoomChannel, type: :channel do
 
       context "with correct params" do
         it { expect(subscription).to be_confirmed }
-        it { expect(streams).to include(stream_from) }
+        it { expect(subscription).to have_stream_from stream_from }
+        it { expect(subscription).to have_stream_for target }
       end
 
       context "with invalid params" do
@@ -27,7 +28,8 @@ describe RoomChannel, type: :channel do
       context "without login" do
         let(:current_user) { nil }
         it { expect(subscription).to be_confirmed }
-        it { expect(streams).to include(stream_from) }
+        it { expect(subscription).to have_stream_from stream_from }
+        it { expect(subscription).to have_stream_for target }
       end
     end
 
