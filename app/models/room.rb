@@ -3,6 +3,7 @@ class Room < ApplicationRecord
   has_many :chats, dependent: :destroy
   has_many :user_room_logs, dependent: :destroy
   has_many :ban_reports, dependent: :destroy
+  has_many :online_user_room_logs, -> { where(exit_at: nil) }, class_name: UserRoomLog.name
   belongs_to :create_user, class_name: "User", optional: true
   validates :key, uniqueness: true
   validates :name, presence: true
@@ -61,10 +62,6 @@ class Room < ApplicationRecord
 
   def online_users
     User.where(id: online_user_room_logs.select(:user_id).distinct)
-  end
-
-  def online_user_room_logs
-    user_room_logs.where(exit_at: nil)
   end
 
   def banned?(user)

@@ -63,17 +63,23 @@ describe RoomChannel, type: :channel do
     context "with invalid params" do
       let(:room_key) { "invalid_key" }
 
-      it { expect { subject }.to change(Chat, :count).by(0) }
-      it { expect { subject }.to change(UserRoomLog, :count).by(0) }
-      it { expect { subject }.to change { room.online_users.count }.by(0) }
+      it {
+        expect { subject }.
+          to change(Chat, :count).by(0).
+               and change(UserRoomLog, :count).by(0).
+                     and change { room.online_users.count }.by(0)
+      }
     end
 
     context "without login" do
       let(:current_user) { nil }
 
-      it { expect { subject }.to change(Chat, :count).by(0) }
-      it { expect { subject }.to change(UserRoomLog, :count).by(0) }
-      it { expect { subject }.to change { room.online_users.count }.by(0) }
+      it {
+        expect { subject }.
+          to change(Chat, :count).by(0).
+               and change(UserRoomLog, :count).by(0).
+                     and change { room.online_users.count }.by(0)
+      }
     end
   end
 
@@ -87,8 +93,11 @@ describe RoomChannel, type: :channel do
     context "without login" do
       let(:current_user) { nil }
 
-      it { expect { subject }.to change(Chat, :count).by(0) }
-      it { expect { subject }.to change { room.online_users.count }.by(0) }
+      it {
+        expect { subject }.
+          to change(Chat, :count).by(0).
+               and change { room.online_users.count }.by(0)
+      }
     end
   end
 
@@ -179,8 +188,11 @@ describe RoomChannel, type: :channel do
     context "without login" do
       let(:current_user) { nil }
 
-      it { expect { subject }.to change(Video, :count).by(0) }
-      it { expect { subject }.to change(Chat, :count).by(0) }
+      it {
+        expect { subject }.
+          to change(Video, :count).by(0).
+               and change(Chat, :count).by(0)
+      }
     end
   end
 
