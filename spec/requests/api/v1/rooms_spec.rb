@@ -74,6 +74,14 @@ describe "room" do
       end
       it { expect { subject }.to change(Room, :count).by(0) }
     end
+
+    context "without sign in" do
+      let(:headers) { { "Authorization" => nil } }
+      it "returns a error message" do
+        is_expected.to eq 401
+        expect(body).to have_json_path("error")
+      end
+    end
   end
 
   describe "GET /api/v1/rooms/:id" do
@@ -81,6 +89,7 @@ describe "room" do
     let(:id) { room.id }
     let(:video) { build(:video, room: room, video_start_time: start_time, video_end_time: end_time) }
     let(:margin) { 10 }
+    let(:headers) { { "Authorization" => nil } }
 
     context "with invalid id" do
       let(:id) { "invalid_id" }
@@ -135,6 +144,7 @@ describe "room" do
   describe "GET /api/v1/rooms" do
     let!(:room) { create(:room) }
     let(:params) { { room_key: room.key } }
+    let(:headers) { { "Authorization" => nil } }
 
     context "with invalid room key" do
       let(:params) { { room_key: "invalid_id" } }
@@ -156,6 +166,7 @@ describe "room" do
     let(:entry_at) { Time.now.utc - margin }
     let(:room) { create(:public_room) }
     let(:user_room_log) { build(:user_room_log, room: room, exit_at: false) }
+    let(:headers) { { "Authorization" => nil } }
 
     context "with valid params" do
       before { user_room_log.save! }
@@ -163,14 +174,6 @@ describe "room" do
         is_expected.to eq 200
         body = response.body
         expect(body).to be_json_eql(room.id).at_path("rooms/0/id")
-      end
-    end
-
-    context "without sign in" do
-      let(:headers) { { "Authorization" => nil } }
-      it "returns a error message" do
-        is_expected.to eq 401
-        expect(body).to have_json_path("error")
       end
     end
   end
