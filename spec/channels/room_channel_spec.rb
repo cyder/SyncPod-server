@@ -4,7 +4,8 @@ describe RoomChannel, type: :channel do
   let(:room) { create(:room) }
   let(:room_key) { room.key }
   let(:user) { create(:user) }
-  let(:target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, subscription.log.uuid]) }
+  let(:log) { subscription.log }
+  let(:target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, log.uuid]) }
   let(:stream_from) { "room_" + room.id.to_s }
   let(:current_user) { user }
   before { stub_connection current_user: current_user, ip_address: "0.0.0.0" }
@@ -83,6 +84,17 @@ describe RoomChannel, type: :channel do
       }
       it { expect { subject }.to change(UserRoomLog, :count).by(1) }
     end
+
+    context "of duplicate" do
+      subject {
+        subscribe room_key: room_key
+        subscribe room_key: room_key
+      }
+
+      it { expect { subject }.to change(Chat, :count).by(1) }
+      it { expect { subject }.to change(UserRoomLog, :count).by(2) }
+      it { expect { subject }.to change { room.online_users.count }.by(1) }
+    end
   end
 
   describe "perform :unsubscribed" do
@@ -91,6 +103,7 @@ describe RoomChannel, type: :channel do
     before { subscribe room_key: room.key }
     it { expect { subject }.to change(Chat, :count).by(1) }
     it { expect { subject }.to change { room.online_users.count }.by(-1) }
+    it { expect { subject }.to change { log.exit_at }.from(nil).to(Time) }
 
     context "without login" do
       let(:current_user) { nil }
@@ -100,6 +113,18 @@ describe RoomChannel, type: :channel do
           to change(Chat, :count).by(0).
                and change { room.online_users.count }.by(0)
       }
+      it { expect { subject }.to change { log.exit_at }.from(nil).to(Time) }
+    end
+
+    context "of duplicate subscription" do
+      before { subscribe room_key: room_key }
+
+      it {
+        expect { subject }.
+          to change(Chat, :count).by(0).
+               and change { room.online_users.count }.by(0)
+      }
+      it { expect { subject }.to change { log.exit_at }.from(nil).to(Time) }
     end
   end
 
