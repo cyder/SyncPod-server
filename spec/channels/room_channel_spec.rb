@@ -4,10 +4,10 @@ describe RoomChannel, type: :channel do
   let(:room) { create(:room) }
   let(:room_key) { room.key }
   let(:user) { create(:user) }
-  let(:target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, subscription.uuid]) }
+  let(:target) { RoomChannel.broadcasting_for([RoomChannel.channel_name, subscription.log.uuid]) }
   let(:stream_from) { "room_" + room.id.to_s }
   let(:current_user) { user }
-  before { stub_connection current_user: current_user }
+  before { stub_connection current_user: current_user, ip_address: "0.0.0.0" }
 
   describe "subscribes to a stream (subscription and streams)" do
     describe "when user is not banned" do
@@ -79,9 +79,9 @@ describe RoomChannel, type: :channel do
       it {
         expect { subject }.
           to change(Chat, :count).by(0).
-               and change(UserRoomLog, :count).by(0).
-                     and change { room.online_users.count }.by(0)
+               and change { room.online_users.count }.by(0)
       }
+      it { expect { subject }.to change(UserRoomLog, :count).by(1) }
     end
   end
 
@@ -237,9 +237,12 @@ describe RoomChannel, type: :channel do
     context "without login" do
       let(:current_user) { nil }
 
-      it { expect { subject }.to change(BanReport, :count).by(0) }
-      it { expect { subject }.to change(Chat, :count).by(0) }
-      it { expect { subject }.to change { room.online_users.count }.by(0) }
+      it {
+        expect { subject }.
+          to change(BanReport, :count).by(0).
+               and change(Chat, :count).by(0).
+                     and change { room.online_users.count }.by(0)
+      }
     end
   end
 end

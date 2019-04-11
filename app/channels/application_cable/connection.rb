@@ -1,6 +1,6 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
-    identified_by :current_user
+    identified_by :current_user, :ip_address
 
     def connect
       auth_token = request.params[:token]
@@ -9,6 +9,7 @@ module ApplicationCable
                           else
                             nil
                           end
+      self.ip_address = request.remote_ip
     end
 
     private

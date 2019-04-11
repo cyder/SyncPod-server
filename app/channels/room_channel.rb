@@ -1,38 +1,37 @@
 class RoomChannel < ApplicationCable::Channel
-  attr_reader :uuid
+  attr_reader :log
 
   def subscribed
     @room = Room.find_by(key: params[:room_key])
     return reject if @room.blank?
+    return reject if @room.banned?(current_user)
 
-    @uuid = SecureRandom.uuid
-    if current_user.present?
-      return reject if @room.banned?(current_user)
-      @room.enter(current_user, @uuid)
-    end
+    @log = UserRoomLog.create! user: current_user,
+                               room: @room,
+                               ip_address: ip_address
 
-    stream_for @uuid
+    stream_for @log.uuid
     stream_from "room_#{@room.id}"
   end
 
   def unsubscribed
     # 既に強制退出されているときは退出処理を行わない
     return if @room.blank? || @room.banned?(current_user)
-    @room.exit(@uuid)
+    @log.exit
   end
 
   def now_playing_video
-    RoomChannel.broadcast_to @uuid,
+    RoomChannel.broadcast_to @log.uuid,
                              render_now_playing_video_json(@room)
   end
 
   def play_list
-    RoomChannel.broadcast_to @uuid,
+    RoomChannel.broadcast_to @log.uuid,
                              render_play_list_json(@room)
   end
 
   def past_chats
-    RoomChannel.broadcast_to @uuid,
+    RoomChannel.broadcast_to @log.uuid,
                              render_past_chats_json(@room)
   end
 
@@ -53,11 +52,11 @@ class RoomChannel < ApplicationCable::Channel
     return if current_user.blank?
 
     target = User.find(data["user_id"])
-    logs = @room.online_user_room_logs.where(user: target)
+    logs = @room.user_room_logs.online.where(user: target)
     logs.each do |log|
       RoomChannel.broadcast_to log.uuid,
                                render_error_json("force exit")
-      @room.exit(log.uuid)
+      log.exit
     end
     BanReport.create! target: target,
                       reporter: current_user,

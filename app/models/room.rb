@@ -3,7 +3,6 @@ class Room < ApplicationRecord
   has_many :chats, dependent: :destroy
   has_many :user_room_logs, dependent: :destroy
   has_many :ban_reports, dependent: :destroy
-  has_many :online_user_room_logs, -> { where(exit_at: nil) }, class_name: UserRoomLog.name
   belongs_to :create_user, class_name: "User", optional: true
   validates :key, uniqueness: true
   validates :name, presence: true
@@ -61,36 +60,11 @@ class Room < ApplicationRecord
   end
 
   def online_users
-    User.where(id: online_user_room_logs.select(:user_id).distinct)
+    User.where(id: user_room_logs.online.select(:user_id).distinct)
   end
 
   def banned?(user)
     ban_reports.where(target: user).effective.present?
-  end
-
-  def enter(user, uuid)
-    ActiveRecord::Base.transaction do
-      # そのルームに同一ユーザがいなかったら入室メッセージを送信する
-      unless online_user_room_logs.exists?(user: user)
-        message = user.name + "さんが入室しました。"
-        chats.create! chat_type: "login", message: message
-      end
-      user_room_logs.create! user: user, uuid: uuid, entry_at: Time.now.utc
-    end
-  end
-
-  def exit(uuid)
-    ActiveRecord::Base.transaction do
-      log = online_user_room_logs.find_by(uuid: uuid)
-      if log.present?
-        log.update!(exit_at: Time.now.utc)
-        # そのルームに同一ユーザがもういなかったら退室メッセージを送信する
-        unless online_user_room_logs.exists?(user: log.user)
-          message = log.user.name + "さんが退室しました。"
-          chats.create! chat_type: "logout", message: message
-        end
-      end
-    end
   end
 
   private
