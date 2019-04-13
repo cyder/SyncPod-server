@@ -20,21 +20,25 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def now_playing_video
+    @subscriber.touch # rubocop:disable Rails/SkipsModelValidations
     RoomChannel.broadcast_to @subscriber.uuid,
                              render_now_playing_video_json(@subscriber.room)
   end
 
   def play_list
+    @subscriber.touch # rubocop:disable Rails/SkipsModelValidations
     RoomChannel.broadcast_to @subscriber.uuid,
                              render_play_list_json(@subscriber.room)
   end
 
   def past_chats
+    @subscriber.touch # rubocop:disable Rails/SkipsModelValidations
     RoomChannel.broadcast_to @subscriber.uuid,
                              render_past_chats_json(@subscriber.room)
   end
 
   def add_video(data)
+    @subscriber.touch # rubocop:disable Rails/SkipsModelValidations
     return if @subscriber.user.blank?
 
     video = @subscriber.room.add_video(data["youtube_video_id"], @subscriber.user)
@@ -48,6 +52,7 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def exit_force(data)
+    @subscriber.touch # rubocop:disable Rails/SkipsModelValidations
     return if @subscriber.user.blank?
 
     target = User.find(data["user_id"])
@@ -65,6 +70,7 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def message(data)
+    @subscriber.touch # rubocop:disable Rails/SkipsModelValidations
     return if @subscriber.user.blank?
 
     Chat.create! room: @subscriber.room,
