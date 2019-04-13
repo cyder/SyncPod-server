@@ -40,8 +40,8 @@ class Api::V1::RoomsController < ApplicationController
 
     @rooms = Room.published.
                joins(:recommend_rooms).
-               limit(max_num).
-               shuffle
+               order("RAND()").
+               limit(max_num)
   end
 
   private
