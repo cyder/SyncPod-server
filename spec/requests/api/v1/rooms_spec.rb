@@ -179,11 +179,10 @@ describe "room" do
   end
 
   describe "GET /api/v1/rooms/recommend" do
-    let(:recommend) { create(:recommend_room) }
+    let!(:recommend) { create(:recommend_room) }
     let(:headers) { { "Authorization" => nil } }
 
     context "with valid params" do
-      before { recommend.save! }
       it "returns a rooms", :autodoc do
         is_expected.to eq 200
         body = response.body

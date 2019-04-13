@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 20190413024022) do
     t.bigint "room_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["room_id"], name: "index_recommend_rooms_on_room_id"
+    t.index ["room_id"], name: "index_recommend_rooms_on_room_id", unique: true
   end
 
   create_table "rooms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|

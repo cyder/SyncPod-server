@@ -9,8 +9,21 @@ describe RecommendRoom do
   end
 
   context "with duplicated room" do
-    let(:room) { create(:room) }
-    before { create(:recommend_room, room: room).save! }
+    let(:room) {
+      create(:public_room).tap { |room|
+        create(:recommend_room, room: room)
+      }
+    }
+
+    it "is invalid" do
+      duplicated = build(:recommend_room, room: room)
+      duplicated.valid?
+      expect(duplicated.errors[:room].size).to eq 1
+    end
+  end
+
+  context "with not public room" do
+    let(:room) { create(:room, public: false) }
 
     it "is invalid" do
       duplicated = build(:recommend_room, room: room)

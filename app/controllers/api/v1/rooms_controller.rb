@@ -38,10 +38,10 @@ class Api::V1::RoomsController < ApplicationController
   def recommend
     max_num = 10
 
-    @rooms = Room.published.
-               joins(:recommend_rooms).
-               order("RAND()").
-               limit(max_num)
+    ids = RecommendRoom.pluck(:room_id).sample(max_num)
+    @rooms = Room.
+               where(id: ids).
+               order(["field(id, ?)", ids])
   end
 
   private
