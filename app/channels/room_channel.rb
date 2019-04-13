@@ -1,39 +1,43 @@
 class RoomChannel < ApplicationCable::Channel
+  attr_reader :log
+
   def subscribed
-    @room = Room.find_by(key: params[:room_key])
-    return reject if subscribable?(@room, current_user)
-    stream_for current_user
-    stream_from "room_#{@room.id}"
-    ActiveRecord::Base.transaction do
-      @room.exit(current_user)
-      message = current_user.name + "さんが入室しました。"
-      Chat.create! room: @room, chat_type: "login", message: message
-      UserRoomLog.create! user: current_user, room: @room, entry_at: Time.now.utc
-    end
+    room = Room.find_by(key: params[:room_key])
+    return reject if room.blank? || room.banned?(current_user)
+
+    @log = UserRoomLog.create! user: current_user,
+                               room: room,
+                               ip_address: ip_address
+
+    stream_for @log.uuid
+    stream_from "room_#{room.id}"
   end
 
   def unsubscribed
-    return if subscribable?(@room, current_user)
-    @room.exit(current_user)
+    # 既に強制退出されているときは退出処理を行わない
+    return if @log.blank? || @log.room.banned?(current_user)
+    @log.exit
   end
 
   def now_playing_video
-    RoomChannel.broadcast_to current_user,
-                             render_now_playing_video_json(@room)
+    RoomChannel.broadcast_to @log.uuid,
+                             render_now_playing_video_json(@log.room)
   end
 
   def play_list
-    RoomChannel.broadcast_to current_user,
-                             render_play_list_json(@room)
+    RoomChannel.broadcast_to @log.uuid,
+                             render_play_list_json(@log.room)
   end
 
   def past_chats
-    RoomChannel.broadcast_to current_user,
-                             render_past_chats_json(@room)
+    RoomChannel.broadcast_to @log.uuid,
+                             render_past_chats_json(@log.room)
   end
 
   def add_video(data)
-    video = @room.add_video(data["youtube_video_id"], current_user)
+    return if current_user.blank?
+
+    video = @log.room.add_video(data["youtube_video_id"], current_user)
     return video if video.blank?
     add_message = video.add_user.name + "さんが「" + video.title + "」を追加しました。"
     Chat.create! room: video.room,
@@ -44,18 +48,25 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def exit_force(data)
+    return if current_user.blank?
+
     target = User.find(data["user_id"])
-    @room.exit(target)
-    RoomChannel.broadcast_to target,
-                             render_error_json("force exit")
+    logs = @log.room.user_room_logs.online.where(user: target)
+    logs.each do |log|
+      RoomChannel.broadcast_to log.uuid,
+                               render_error_json("force exit")
+      log.exit
+    end
     BanReport.create! target: target,
                       reporter: current_user,
-                      room: @room,
+                      room: @log.room,
                       expiration_at: Time.now.utc + 60 * 60 * 24
   end
 
   def message(data)
-    Chat.create! room: @room,
+    return if current_user.blank?
+
+    Chat.create! room: @log.room,
                  chat_type: "user",
                  message: data["message"],
                  user: current_user
@@ -89,9 +100,5 @@ class RoomChannel < ApplicationCable::Channel
                                             formats: "json",
                                             handlers: "jbuilder",
                                             locals: { message: message })
-    end
-
-    def subscribable?(room, user)
-      room.blank? || room.banned?(user)
     end
 end

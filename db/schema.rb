@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180514003339) do
+ActiveRecord::Schema.define(version: 20190409131148) do
 
   create_table "ban_reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.bigint "target_id"
@@ -62,8 +62,11 @@ ActiveRecord::Schema.define(version: 20180514003339) do
     t.datetime "exit_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "uuid", limit: 36
+    t.text "ip_address"
     t.index ["room_id"], name: "index_user_room_logs_on_room_id"
     t.index ["user_id"], name: "index_user_room_logs_on_user_id"
+    t.index ["uuid"], name: "index_user_room_logs_on_uuid"
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
