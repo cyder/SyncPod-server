@@ -177,4 +177,18 @@ describe "room" do
       end
     end
   end
+
+  describe "GET /api/v1/rooms/recommend" do
+    let(:recommend) { create(:recommend_room) }
+    let(:headers) { { "Authorization" => nil } }
+
+    context "with valid params" do
+      before { recommend.save! }
+      it "returns a rooms", :autodoc do
+        is_expected.to eq 200
+        body = response.body
+        expect(body).to be_json_eql(recommend.room.id).at_path("rooms/0/id")
+      end
+    end
+  end
 end
