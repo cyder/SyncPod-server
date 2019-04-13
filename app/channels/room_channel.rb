@@ -1,43 +1,43 @@
 class RoomChannel < ApplicationCable::Channel
-  attr_reader :log
+  attr_reader :subscriber
 
   def subscribed
     room = Room.find_by(key: params[:room_key])
     return reject if room.blank? || room.banned?(current_user)
 
-    @log = UserRoomLog.create! user: current_user,
-                               room: room,
-                               ip_address: ip_address
+    @subscriber = UserRoomLog.create! user: current_user,
+                                      room: room,
+                                      ip_address: ip_address
 
-    stream_for @log.uuid
+    stream_for @subscriber.uuid
     stream_from "room_#{room.id}"
   end
 
   def unsubscribed
     # 既に強制退出されているときは退出処理を行わない
-    return if @log.blank? || @log.room.banned?(current_user)
-    @log.exit
+    return if @subscriber.blank? || @subscriber.room.banned?(@subscriber.user)
+    @subscriber.exit
   end
 
   def now_playing_video
-    RoomChannel.broadcast_to @log.uuid,
-                             render_now_playing_video_json(@log.room)
+    RoomChannel.broadcast_to @subscriber.uuid,
+                             render_now_playing_video_json(@subscriber.room)
   end
 
   def play_list
-    RoomChannel.broadcast_to @log.uuid,
-                             render_play_list_json(@log.room)
+    RoomChannel.broadcast_to @subscriber.uuid,
+                             render_play_list_json(@subscriber.room)
   end
 
   def past_chats
-    RoomChannel.broadcast_to @log.uuid,
-                             render_past_chats_json(@log.room)
+    RoomChannel.broadcast_to @subscriber.uuid,
+                             render_past_chats_json(@subscriber.room)
   end
 
   def add_video(data)
-    return if current_user.blank?
+    return if @subscriber.user.blank?
 
-    video = @log.room.add_video(data["youtube_video_id"], current_user)
+    video = @subscriber.room.add_video(data["youtube_video_id"], @subscriber.user)
     return video if video.blank?
     add_message = video.add_user.name + "さんが「" + video.title + "」を追加しました。"
     Chat.create! room: video.room,
@@ -48,28 +48,29 @@ class RoomChannel < ApplicationCable::Channel
   end
 
   def exit_force(data)
-    return if current_user.blank?
+    return if @subscriber.user.blank?
 
     target = User.find(data["user_id"])
-    logs = @log.room.user_room_logs.online.where(user: target)
-    logs.each do |log|
-      RoomChannel.broadcast_to log.uuid,
+    online_subscribers = @subscriber.room.user_room_logs.online
+    target_subscribers = online_subscribers.where(user: target)
+    target_subscribers.each do |target_subscriber|
+      RoomChannel.broadcast_to target_subscriber.uuid,
                                render_error_json("force exit")
-      log.exit
+      target_subscriber.exit
     end
     BanReport.create! target: target,
-                      reporter: current_user,
-                      room: @log.room,
+                      reporter: @subscriber.user,
+                      room: @subscriber.room,
                       expiration_at: Time.now.utc + 60 * 60 * 24
   end
 
   def message(data)
-    return if current_user.blank?
+    return if @subscriber.user.blank?
 
-    Chat.create! room: @log.room,
+    Chat.create! room: @subscriber.room,
                  chat_type: "user",
                  message: data["message"],
-                 user: current_user
+                 user: @subscriber.user
   end
 
   private
