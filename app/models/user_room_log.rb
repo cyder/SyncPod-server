@@ -7,7 +7,7 @@ class UserRoomLog < ApplicationRecord
   after_create :send_enter_message
   after_update :send_exit_message, if: proc { |log| log.exit_at_before_last_save.blank? && log.exit_at.present? }
 
-  scope :online, -> { where exit_at: nil }
+  scope :online, -> { where(exit_at: nil).where("updated_at > ?", Time.now.utc - 60 * 60) }
 
   def exit
     update! exit_at: Time.now.utc
