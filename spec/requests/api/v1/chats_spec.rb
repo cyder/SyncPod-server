@@ -27,8 +27,8 @@ describe "chats" do
       it { is_expected.to eq 404 }
     end
 
-    context "with cursor" do
-      let!(:before_chat) { create(:user_chat, room: room) }
+    context "with valid cursor" do
+      let(:before_chat) { create(:user_chat, room: room) }
       let(:params) { { room_key: room.key, cursor: before_chat.id } }
 
       it "returns a chat", :autodoc do
@@ -42,6 +42,12 @@ describe "chats" do
         body = response.body
         expect(body).not_to have_json_path("chats/1/id")
       end
+    end
+
+    context "with invalid cursor" do
+      let(:params) { { room_key: room.key, cursor: "invalid" } }
+
+      it { is_expected.to eq 404 }
     end
   end
 end
