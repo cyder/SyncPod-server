@@ -195,8 +195,8 @@ describe RoomChannel, type: :channel do
       before { chat.save! }
       it "expect to have broadcast with chat" do
         expect { subject }.to have_broadcasted_to(target).with { |data|
-                                expect(data).to be_json_eql(%("#{chat.message}")).at_path("data/past_chats/0/message")
-                                expect(data).to be_json_eql(user.id).at_path("data/past_chats/0/user/id")
+                                expect(data).to be_json_eql(%("#{chat.message}")).at_path("data/past_chats/1/message")
+                                expect(data).to be_json_eql(user.id).at_path("data/past_chats/1/user/id")
                               }
       end
     end

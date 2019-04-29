@@ -15,6 +15,18 @@ describe "chats" do
       end
     end
 
+    context "without room_key" do
+      let(:params) { {} }
+
+      it { is_expected.to eq 404 }
+    end
+
+    context "with invalid room_key" do
+      let(:params) { { room_key: "invalid_key" } }
+
+      it { is_expected.to eq 404 }
+    end
+
     context "with cursor" do
       let!(:before_chat) { create(:user_chat, room: room) }
       let(:params) { { room_key: room.key, cursor: before_chat.id } }
