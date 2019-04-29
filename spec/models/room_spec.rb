@@ -141,6 +141,17 @@ describe Room do
       }
       it { is_expected.to eq [chat2, chat3] }
     end
+
+    context "with cursor" do
+      subject { room.past_chats 2, chat3.id }
+
+      before {
+        chat1.save!
+        chat2.save!
+        chat3.save!
+      }
+      it { is_expected.to eq [chat1, chat2] }
+    end
   end
 
   describe "#online_users" do

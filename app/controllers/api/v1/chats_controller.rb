@@ -5,6 +5,7 @@ class Api::V1::ChatsController < ApplicationController
       render json: { error: t("404 error") }, status: 404
       return
     end
-    @chats = room.past_chats(10)
+    cursor = Chat.find_by(id: params[:cursor])
+    @chats = room.past_chats(10, cursor)
   end
 end
