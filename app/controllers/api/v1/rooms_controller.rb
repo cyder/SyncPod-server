@@ -1,6 +1,6 @@
 class Api::V1::RoomsController < ApplicationController
   include ApiCommon
-  skip_before_action :authenticate_user_from_token!, only: [:index, :show, :popular]
+  skip_before_action :authenticate_user_from_token!, only: [:index, :show, :popular, :recommend]
 
   def index
     @room = Room.find_by(key: params[:room_key])
@@ -33,6 +33,15 @@ class Api::V1::RoomsController < ApplicationController
     @rooms = Room.published.
                order_by_online_user.
                limit(max_num)
+  end
+
+  def recommend
+    max_num = 10
+
+    ids = RecommendRoom.pluck(:room_id).sample(max_num)
+    @rooms = Room.
+               where(id: ids).
+               order(["field(id, ?)", ids])
   end
 
   private

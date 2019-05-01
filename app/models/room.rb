@@ -3,6 +3,7 @@ class Room < ApplicationRecord
   has_many :chats, dependent: :destroy
   has_many :user_room_logs, dependent: :destroy
   has_many :ban_reports, dependent: :destroy
+  has_one :recommend_room, dependent: :destroy
   belongs_to :create_user, class_name: "User", optional: true
   validates :key, uniqueness: true
   validates :name, presence: true

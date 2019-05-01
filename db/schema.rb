@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190409131148) do
+ActiveRecord::Schema.define(version: 20190413024022) do
 
   create_table "ban_reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
     t.bigint "target_id"
@@ -33,6 +33,13 @@ ActiveRecord::Schema.define(version: 20190409131148) do
     t.bigint "user_id"
     t.index ["room_id"], name: "index_chats_on_room_id"
     t.index ["user_id"], name: "index_chats_on_user_id"
+  end
+
+  create_table "recommend_rooms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
+    t.bigint "room_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["room_id"], name: "index_recommend_rooms_on_room_id", unique: true
   end
 
   create_table "rooms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
@@ -111,6 +118,7 @@ ActiveRecord::Schema.define(version: 20190409131148) do
   end
 
   add_foreign_key "chats", "users"
+  add_foreign_key "recommend_rooms", "rooms"
   add_foreign_key "rooms", "users", column: "create_user_id"
   add_foreign_key "videos", "rooms"
   add_foreign_key "videos", "users", column: "add_user_id"

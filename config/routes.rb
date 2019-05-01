@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :rooms, only: [:index, :create, :show] do
         collection do
           get :popular
+          get :recommend
         end
       end
       get "joined_rooms", to: "users#joined_rooms"
