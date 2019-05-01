@@ -7,6 +7,10 @@ class Chat < ApplicationRecord
   end
 
   scope :latest_by, ->(num) do
-    order(created_at: :desc).limit(num)
+    order(id: :desc).limit(num)
+  end
+
+  scope :before, ->(cursor) do
+    where("id < ?", cursor)
   end
 end

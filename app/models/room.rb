@@ -56,8 +56,12 @@ class Room < ApplicationRecord
     videos.ended.order_by_end.last
   end
 
-  def past_chats(num)
-    chats.latest_by(num).reverse
+  def past_chats(num, cursor = nil)
+    if cursor.blank?
+      chats.latest_by(num).reverse
+    else
+      chats.before(cursor).latest_by(num).reverse
+    end
   end
 
   def online_users
