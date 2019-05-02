@@ -10,9 +10,8 @@ describe UserRoomLog, type: :model do
     subject { UserRoomLog.online }
 
     let(:updated_at) { Time.now.utc }
-    let(:log) { create(:user_room_log, exit_at: exit_at, updated_at: updated_at) }
 
-    before { log.save! }
+    before { create(:user_room_log, exit_at: exit_at, updated_at: updated_at) }
 
     context "when exit_at is nil" do
       let(:exit_at) { nil }
@@ -30,7 +29,7 @@ describe UserRoomLog, type: :model do
       end
     end
 
-    context "when exit_at exsit" do
+    context "when exit_at exist" do
       let(:exit_at) { Time.now.utc - 10 }
 
       it "did not returns a log" do
